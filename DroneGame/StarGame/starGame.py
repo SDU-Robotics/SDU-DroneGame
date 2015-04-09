@@ -19,29 +19,45 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
+	# Setup logo
+	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
+	logoScaledPixmap = logoPixmap.scaled(logoPixmap.width()/2,logoPixmap.height()/2, QtCore.Qt.KeepAspectRatio)
+	self.labelLogo.setPixmap(logoScaledPixmap)
+
 	# Get screen info (resolution)
 	self.screen = QtGui.QDesktopWidget().screenGeometry()
 
 	# Load drone image.
 	dronePixmap = QtGui.QPixmap('images/droneHighRes.png')
-	droneScaledPixmap = dronePixmap.scaled(50,50, QtCore.Qt.KeepAspectRatio)
-	#self.droneLabel.setPixmap(droneScaledPixmap)
+	droneScaledPixmap = dronePixmap.scaled(90,90, QtCore.Qt.KeepAspectRatio)
+	self.labelDrone.setPixmap(droneScaledPixmap)
 
 	# Graphics scene stuff
-	scene = QtGui.QGraphicsScene()
+	'''scene = QtGui.QGraphicsScene()
 	scene.setSceneRect(0, 0, 600, 600);
 	self.graphicsView.setScene(scene)
-	self.graphicsDronePixmap = scene.addPixmap(droneScaledPixmap)
+	self.graphicsDronePixmap = scene.addPixmap(droneScaledPixmap)'''
 
 	# Timer stuff	
 	self.animationTimer = QtCore.QTimeLine(1000/30)
 	#self.animationTimer.setFrameRange(0, 1000)
-
+	self.gameTimer = QtCore.QTimer()
+	self.gameTimer.timeout.connect(self.gameTimerCallback)
+	
 	# Old drone pos
 	self.oldDronePos = Point(0,0,0)	
 
 	# Bind the event handlers
         self.btnExit.clicked.connect(self.btnExitClicked)  
+        self.btnReset.clicked.connect(self.btnResetClicked)  
+        self.btnStart.clicked.connect(self.btnStartClicked)  
+
+    def gameTimerCallback(self):
+	#print self.lcdTime.intValue()
+	if (self.lcdTime.intValue()-1 < 0):
+		self.gameTimer.stop()
+	else:
+		self.lcdTime.display(self.lcdTime.intValue()-1)
 
     def animateDrone(self, newPos):
 	self.animationTimer.stop()
@@ -67,11 +83,19 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	rospy.signal_shutdown("Exit program")
 	QtGui.QApplication.quit()
 
+    def btnResetClicked(self):    
+	self.gameTimer.stop()
+	self.lcdTime.display(60)
+
+    def btnStartClicked(self):    
+	self.gameTimer.start(1000)
+
     def moveDrone(self, msg):
 	if(msg.x>0 and msg.y>0):
-		self.animateDrone(Point(msg.x,msg.y,0))
-		print "(x,y): ", msg.x, ",", msg.y
+		#self.animateDrone(Point(msg.x,msg.y,0))
+		#print "(x,y): ", msg.x, ",", msg.y
 		#self.graphicsDronePixmap.setPos(msg.x*2,msg.y*2)
+		self.labelDrone.move(800+msg.x,100+msg.y)
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
