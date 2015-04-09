@@ -4,6 +4,7 @@ import rospy
 from PyQt4 import QtCore, QtGui, uic
 from threading import Thread
 from geometry_msgs.msg import Point
+from random import randint
 
 # Load GUI
 formClass = uic.loadUiType("starGameUI.ui")[0]               
@@ -19,6 +20,14 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
+	# Variables	
+	self.gameRunning = False
+	self.score = 5
+	self.highscore = 0
+	self.updateScore()
+	self.xOffset = 800
+	self.yOffset = 100	
+
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
 	logoScaledPixmap = logoPixmap.scaled(logoPixmap.width()/2,logoPixmap.height()/2, QtCore.Qt.KeepAspectRatio)
@@ -31,6 +40,11 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	dronePixmap = QtGui.QPixmap('images/droneHighRes.png')
 	droneScaledPixmap = dronePixmap.scaled(90,90, QtCore.Qt.KeepAspectRatio)
 	self.labelDrone.setPixmap(droneScaledPixmap)
+
+	# Load star image.
+	starPixmap = QtGui.QPixmap('images/star.png')
+	starScaledPixmap = starPixmap.scaled(60,60, QtCore.Qt.KeepAspectRatio)
+	self.labelStar.setPixmap(starScaledPixmap)
 
 	# Graphics scene stuff
 	'''scene = QtGui.QGraphicsScene()
@@ -52,12 +66,34 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         self.btnReset.clicked.connect(self.btnResetClicked)  
         self.btnStart.clicked.connect(self.btnStartClicked)  
 
+    def resetGame(self):
+	self.score = 0
+	self.lcdScore.display(self.score)
+
+    def generateStar(self):
+	randX =	randint(self.xOffset,self.xOffset+600)
+	randY =	randint(self.yOffset,self.yOffset+600)
+	self.labelStar.move(randX,randY)
+
+    def updateScore(self):
+	self.score += 1
+	self.lcdScore.display(self.score)
+
+    def updateHighscore(self):
+	if(self.highscore < self.score):
+		self.highscore = self.score
+		self.lcdHighscore.display(self.highscore)
+
     def gameTimerCallback(self):
 	#print self.lcdTime.intValue()
 	if (self.lcdTime.intValue()-1 < 0):
 		self.gameTimer.stop()
+		self.updateHighscore()
+		self.resetGame()
 	else:
 		self.lcdTime.display(self.lcdTime.intValue()-1)
+		self.updateScore()
+		self.generateStar()
 
     def animateDrone(self, newPos):
 	self.animationTimer.stop()
@@ -79,6 +115,15 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.oldDronePos = newPos;
 	self.animationTimer.start()
 
+    def keyPressEvent(self, event):	
+	key = event.key()
+	if event.isAutoRepeat():
+	    	if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_A: 
+			print "A"
+
+	    	if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_S:
+			print "S"
+
     def btnExitClicked(self):    
 	rospy.signal_shutdown("Exit program")
 	QtGui.QApplication.quit()
@@ -87,7 +132,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.gameTimer.stop()
 	self.lcdTime.display(60)
 
-    def btnStartClicked(self):    
+    def btnStartClicked(self):   
+	self.resetGame() 
 	self.gameTimer.start(1000)
 
     def moveDrone(self, msg):
@@ -95,7 +141,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		#self.animateDrone(Point(msg.x,msg.y,0))
 		#print "(x,y): ", msg.x, ",", msg.y
 		#self.graphicsDronePixmap.setPos(msg.x*2,msg.y*2)
-		self.labelDrone.move(800+msg.x,100+msg.y)
+		self.labelDrone.move(self.xOffset + msg.x, self.yOffset + msg.y)
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
@@ -116,7 +162,7 @@ if __name__ == "__main__":
 
 	# Show game window
 	gameWindow.show()
-	gameWindow.showFullScreen()
+	#gameWindow.showFullScreen()
 	app.exec_()
 
 

@@ -351,14 +351,30 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
   <widget class="QLabel" name="labelDrone">
    <property name="geometry">
     <rect>
-     <x>600</x>
-     <y>740</y>
+     <x>60</x>
+     <y>270</y>
      <width>200</width>
      <height>200</height>
     </rect>
    </property>
    <property name="text">
-    <string>X</string>
+    <string>Drone</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelStar">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>260</y>
+     <width>200</width>
+     <height>200</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Star</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
