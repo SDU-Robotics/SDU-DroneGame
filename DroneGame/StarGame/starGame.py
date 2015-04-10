@@ -42,8 +42,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.screen = QtGui.QDesktopWidget().screenGeometry()
 
 	# Load star image.
-	starPixmap = QtGui.QPixmap('images/star.png')
-	starScaledPixmap = starPixmap.scaled(60,60, QtCore.Qt.KeepAspectRatio)
+	starPixmap = QtGui.QPixmap('images/apple.png')
+	starScaledPixmap = starPixmap.scaled(50,50, QtCore.Qt.KeepAspectRatio)
 	self.labelStar.setPixmap(starScaledPixmap)
 	self.labelStar.move(1920/2,1080/4)
 	self.labelStar.setVisible(False)
@@ -60,8 +60,15 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.graphicsView.setScene(scene)
 	self.graphicsDronePixmap = scene.addPixmap(droneScaledPixmap)'''
 
+	# Progress bar
+	self.barTime.setMaximum(60)
+	self.barTime.setMinimum(0)
+	self.barTime.setRange(0,60)
+	#self.barTime.setValue(60)
+	self.barTime.setTextVisible(True)
+
 	# Timer stuff	
-	self.animationTimer = QtCore.QTimeLine(1000/30)
+	#self.animationTimer = QtCore.QTimeLine(1000/30)
 	#self.animationTimer.setFrameRange(0, 1000)
 	self.gameTimer = QtCore.QTimer()
 	self.gameTimer.timeout.connect(self.gameTimerCallback)
@@ -88,19 +95,20 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		self.lcdHighscore.display(self.highscore)
 
     def starTimerCallback(self):
-	if(abs(self.starPos.x-self.currentPos.x-600)<50 and abs(self.starPos.y-self.currentPos.y)<50):
+	if(abs(self.starPos.x-self.currentPos.x-600)<60 and abs(self.starPos.y-self.currentPos.y)<60):
 		self.updateScore()
 		self.generateStar()
-	
 
     def gameTimerCallback(self):
-	if(self.lcdTime.intValue()-1 < 0):
+	#if(self.lcdTime.intValue()-1 < 0):
+	if(self.barTime.value()-1 < 0):
 		self.updateHighscore()
 		self.resetGame()
 	else:
-		self.lcdTime.display(self.lcdTime.intValue()-1)
+		#self.lcdTime.display(self.lcdTime.intValue()-1)
+		self.barTime.setValue(self.barTime.value()-1)
 
-    def animateDrone(self, newPos):
+    '''def animateDrone(self, newPos):
 	self.animationTimer.stop()
 	animation = QtGui.QGraphicsItemAnimation()
 	animation.setItem(self.graphicsDronePixmap)
@@ -118,7 +126,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		animation.setPosAt(i/interval, QtCore.QPointF(tempPos.x, tempPos.y))
 
 	self.oldDronePos = newPos;
-	self.animationTimer.start()
+	self.animationTimer.start()'''
 
     def keyPressEvent(self, event):
 	# Manual control
@@ -154,7 +162,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
     def btnStartClicked(self):  
 	self.score = 0
 	self.lcdScore.display(self.score) 
-	self.lcdTime.display(60)
+	#self.lcdTime.display(60)
+	self.barTime.setValue(60)
 	self.generateStar()
 	self.labelStar.setVisible(True)
 	self.gameRunning = True
