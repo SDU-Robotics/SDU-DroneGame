@@ -47,7 +47,7 @@
     <property name="font">
      <font>
       <family>Droid Sans</family>
-      <pointsize>36</pointsize>
+      <pointsize>30</pointsize>
      </font>
     </property>
     <property name="text">
@@ -242,7 +242,7 @@ QLCDNumber {
     <property name="font">
      <font>
       <family>Droid Sans</family>
-      <pointsize>36</pointsize>
+      <pointsize>30</pointsize>
      </font>
     </property>
     <property name="text">
@@ -261,7 +261,7 @@ QLCDNumber {
     <property name="font">
      <font>
       <family>Droid Sans</family>
-      <pointsize>36</pointsize>
+      <pointsize>30</pointsize>
      </font>
     </property>
     <property name="text">
