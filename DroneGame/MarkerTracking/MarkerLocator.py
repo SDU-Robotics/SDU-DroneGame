@@ -27,14 +27,12 @@ Frederik Hagelskjaer added code to publish marker locations to ROS.
 PublishToROS = True
 
 if PublishToROS:
-    #import roslib; 
-    #roslib.load_manifest('frobitLocator')
     import rospy
     from geometry_msgs.msg import Point
+    from sensor_msgs.msg import Image
+    from cv_bridge import CvBridge, CvBridgeError
+    import cv2
             
-
-
-
 class CameraDriver:
     ''' 
     Purpose: capture images from a camera and delegate procesing of the 
@@ -121,7 +119,7 @@ class CameraDriver:
 
     
     def showProcessedFrame(self):
-        cv.ShowImage('filterdemo', self.processedFrame)
+        cv.ShowImage('filterdemo', self.currentFrame)
         pass
 
     def resetAllLocations(self):
@@ -153,24 +151,35 @@ class CameraDriver:
     def signal_handler(self, signal, frame):
 	self.running = False
 
+    def publishImageFrame(self, RP):
+	RP.publishImage(self.currentFrame)
+
+
 class RosPublisher:
     def __init__(self, markers):
         # Instantiate ros publisher with information about the markers that 
         # will be tracked.
         self.pub = []
         self.markers = markers
+	self.bridge = CvBridge()
         for i in markers:
-            self.pub.append( rospy.Publisher('positionPublisher' + str(i), Point)  )       
+            self.pub.append( rospy.Publisher('positionPublisher' + str(i), Point)  )     
+	self.imagePub = rospy.Publisher("imagePublisher",Image)
         rospy.init_node('DroneLocator')   
+
+    def publishImage(self, Image):
+	try:
+		self.imagePub.publish(self.bridge.cv2_to_imgmsg(Image))
+	except CvBridgeError, e:
+        	print e
 
     def publishMarkerLocations(self, locations):
         j = 0        
         #for i in self.markers:
            # print 'x%i %i  y%i %i  o%i %i' %(i, locations[j][0], i, locations[j][1], i, locations[j][2])
             #ros function        
-        self.pub[j].publish(  Point( locations.x, locations.y, 0 )  )
-        j = j + 1                
-        
+        self.pub[j].publish(Point(locations.x, locations.y, 0))
+        #j = j + 1                
 
 
 def main():
@@ -197,6 +206,7 @@ def main():
         y = cd.returnPositions()     
         if PublishToROS:
             RP.publishMarkerLocations(perspectiveConverter.convertPose(y[0]))
+	    #cd.publishImageFrame(RP)
         else:
             pass
             #print y

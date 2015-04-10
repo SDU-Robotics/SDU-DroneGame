@@ -9,7 +9,7 @@ from random import randint
 # Load GUI
 formClass = uic.loadUiType("starGameUI.ui")[0]               
 
-useROS = False
+useROS = True
 
 # Ros spin thread
 def rosThread():
