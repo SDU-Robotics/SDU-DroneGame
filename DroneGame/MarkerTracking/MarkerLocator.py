@@ -144,7 +144,7 @@ class CameraDriver:
             # save image
             print("Saving image")
             filename = strftime("%Y-%m-%d %H-%M-%S")
-            cv.SaveImage("output/%s.png" % filename, self.currentFrame)
+            cv.SaveImage("pictures/%s.png" % filename, self.currentFrame)
 
     def returnPositions(self):
         # Return list of all marker locations.
@@ -182,7 +182,7 @@ def main():
     cd = CameraDriver(toFind, defaultKernelSize = 15, cameraNumber = 0) 
      
     signal.signal(signal.SIGINT, cd.signal_handler)
-    pointLocationsInImage = [[320, 0], [1032, 0], [1025, 712], [327, 705]]
+    pointLocationsInImage = [[369, 16], [1020, 32], [1000, 677], [362, 657]]
     realCoordinates = [[0, 0], [300, 0], [300, 300], [0, 300]]
     perspectiveConverter = PerspectiveCorrecter(pointLocationsInImage, realCoordinates)
  
@@ -205,8 +205,6 @@ def main():
 		    if not PublishToROS:
                     	poseCorrected = perspectiveConverter.convertPose(y[k])
 	                print "x: ", poseCorrected.x, " y: ", poseCorrected.y
-                    #print("%8.3f %8.3f" % (poseCorrected.x, poseCorrected.y))
-		    #print "x: ", poseCorrected.x, " y: ", poseCorrected.y, " timestamp: ", timestamp
                 except:
                     pass      
             

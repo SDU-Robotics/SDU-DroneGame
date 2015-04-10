@@ -27,9 +27,10 @@
    </property>
    <property name="styleSheet">
     <string notr="true">QGroupBox {
-    border: 1px solid gray;
-    border-radius: 9px;
-}</string>
+    border: 2px solid gray;
+    border-radius: 5px;
+}
+</string>
    </property>
    <property name="title">
     <string/>
@@ -38,7 +39,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>150</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -57,7 +58,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>500</y>
+      <y>490</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -65,15 +66,15 @@
     <property name="font">
      <font>
       <pointsize>20</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
 color: #333;
-border: 2px solid #555;
-border-radius: 11px;
+border: 2px solid gray;
+border-radius: 5px;
 padding: 5px;
 background: qradialgradient(cx: 0.3, cy: -0.4,
 fx: 0.3, fy: -0.4,
@@ -91,7 +92,8 @@ QPushButton:pressed {
 background: qradialgradient(cx: 0.4, cy: -0.1,
 fx: 0.4, fy: -0.1,
 radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
-}</string>
+}
+</string>
     </property>
     <property name="text">
      <string>Start</string>
@@ -101,7 +103,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>500</y>
+      <y>490</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -114,8 +116,8 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="styleSheet">
      <string notr="true">QPushButton {
 color: #333;
-border: 2px solid #555;
-border-radius: 11px;
+border: 2px solid gray;
+border-radius: 5px;
 padding: 5px;
 background: qradialgradient(cx: 0.3, cy: -0.4,
 fx: 0.3, fy: -0.4,
@@ -133,7 +135,8 @@ QPushButton:pressed {
 background: qradialgradient(cx: 0.4, cy: -0.1,
 fx: 0.4, fy: -0.1,
 radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
-}</string>
+}
+</string>
     </property>
     <property name="text">
      <string>Exit</string>
@@ -146,7 +149,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>500</y>
+      <y>490</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -159,8 +162,8 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="styleSheet">
      <string notr="true">QPushButton {
 color: #333;
-border: 2px solid #555;
-border-radius: 11px;
+border: 2px solid gray;
+border-radius: 5px;
 padding: 5px;
 background: qradialgradient(cx: 0.3, cy: -0.4,
 fx: 0.3, fy: -0.4,
@@ -178,7 +181,8 @@ QPushButton:pressed {
 background: qradialgradient(cx: 0.4, cy: -0.1,
 fx: 0.4, fy: -0.1,
 radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
-}</string>
+}
+</string>
     </property>
     <property name="text">
      <string>Reset</string>
@@ -188,27 +192,49 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>30</y>
+      <y>150</y>
       <width>231</width>
       <height>91</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLCDNumber::chunk {
+            background-color: #003399;
+             }
+QLCDNumber {
+          border: 2px solid grey;
+          border-radius: 5px;
+          text-align: center;
+       background: #ffffff;
+        }</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="lcdHighscore">
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>260</y>
+      <y>290</y>
       <width>231</width>
       <height>91</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLCDNumber::chunk {
+            background-color: #003399;
+             }
+QLCDNumber {
+          border: 2px solid grey;
+          border-radius: 5px;
+          text-align: center;
+       background: #ffffff;
+        }</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>40</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -227,7 +253,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>260</y>
+      <y>290</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -242,33 +268,48 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string>Highscore</string>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="lcdTime">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>190</y>
-      <width>41</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="numDigits">
-     <number>2</number>
-    </property>
-    <property name="intValue" stdset="0">
-     <number>60</number>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="barTime">
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>190</y>
-      <width>181</width>
+      <y>80</y>
+      <width>201</width>
       <height>20</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar::chunk {
+            background-color: #003399;
+             }
+QProgressBar {
+          border: 2px solid grey;
+          border-radius: 5px;
+          text-align: center;
+       background: #ffffff;
+        }</string>
+    </property>
     <property name="value">
      <number>24</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelTime">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>80</y>
+      <width>21</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>60</string>
     </property>
    </widget>
   </widget>
@@ -283,8 +324,8 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    </property>
    <property name="styleSheet">
     <string notr="true">QGroupBox {
-    border: 1px solid gray;
-    border-radius: 9px;
+    border: 2px solid gray;
+    border-radius: 5px;
 }</string>
    </property>
    <property name="title">
@@ -312,48 +353,20 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    </property>
    <property name="styleSheet">
     <string notr="true">QGroupBox {
-    border: 1px solid gray;
-    border-radius: 9px;
+    border: 2px solid gray;
+    border-radius: 5px;
 }</string>
    </property>
    <property name="title">
     <string/>
    </property>
-   <widget class="QLabel" name="logo">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>190</y>
-      <width>471</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Courier 10 Pitch</family>
-      <pointsize>28</pointsize>
-      <weight>75</weight>
-      <italic>false</italic>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QLabel { background-color : transparent; color : black; }</string>
-    </property>
-    <property name="text">
-     <string>Star Collector</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelLogo">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>30</x>
       <y>20</y>
-      <width>431</width>
-      <height>151</height>
+      <width>461</width>
+      <height>221</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -388,6 +401,12 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <width>200</width>
      <height>200</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>URW Bookman L</family>
+     <italic>true</italic>
+    </font>
    </property>
    <property name="text">
     <string>Star</string>

@@ -9,6 +9,8 @@ from random import randint
 # Load GUI
 formClass = uic.loadUiType("starGameUI.ui")[0]               
 
+useROS = False
+
 # Ros spin thread
 def rosThread():
 	rospy.spin()
@@ -21,7 +23,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         self.setupUi(self)
 
 	# Variables	
-	self.gameRunning = False
+	self.gameLength = 60 # seconds
 	self.score = 0
 	self.highscore = 0
 	self.updateScore()
@@ -35,11 +37,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
-	logoScaledPixmap = logoPixmap.scaled(logoPixmap.width()/2,logoPixmap.height()/2, QtCore.Qt.KeepAspectRatio)
+	logoScaledPixmap = logoPixmap.scaled(logoPixmap.width()/1.7,logoPixmap.height()/1.7, QtCore.Qt.KeepAspectRatio)
 	self.labelLogo.setPixmap(logoScaledPixmap)
-
-	# Get screen info (resolution)
-	self.screen = QtGui.QDesktopWidget().screenGeometry()
 
 	# Load star image.
 	starPixmap = QtGui.QPixmap('images/apple.png')
@@ -54,22 +53,12 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.labelDrone.setPixmap(droneScaledPixmap)
 	self.labelDrone.move(1920/2,1080/2)
 
-	# Graphics scene stuff
-	'''scene = QtGui.QGraphicsScene()
-	scene.setSceneRect(0, 0, self.xSize, self.ySize);
-	self.graphicsView.setScene(scene)
-	self.graphicsDronePixmap = scene.addPixmap(droneScaledPixmap)'''
-
 	# Progress bar
-	self.barTime.setMaximum(60)
-	self.barTime.setMinimum(0)
-	self.barTime.setRange(0,60)
-	#self.barTime.setValue(60)
-	self.barTime.setTextVisible(True)
+	self.barTime.setRange(0,self.gameLength)
+	self.barTime.setValue(self.gameLength)
+	self.barTime.setTextVisible(False)
 
 	# Timer stuff	
-	#self.animationTimer = QtCore.QTimeLine(1000/30)
-	#self.animationTimer.setFrameRange(0, 1000)
 	self.gameTimer = QtCore.QTimer()
 	self.gameTimer.timeout.connect(self.gameTimerCallback)
 	self.starTimer = QtCore.QTimer()
@@ -95,56 +84,38 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		self.lcdHighscore.display(self.highscore)
 
     def starTimerCallback(self):
-	if(abs(self.starPos.x-self.currentPos.x-600)<60 and abs(self.starPos.y-self.currentPos.y)<60):
+	if useROS == True:
+		if(abs(self.starPos.x-self.currentPos.x)<60 and abs(self.starPos.y-self.currentPos.y)<60):
+			self.updateScore()
+			self.generateStar()
+	elif(abs(self.starPos.x-self.currentPos.x-600)<60 and abs(self.starPos.y-self.currentPos.y)<60):
 		self.updateScore()
 		self.generateStar()
 
     def gameTimerCallback(self):
-	#if(self.lcdTime.intValue()-1 < 0):
 	if(self.barTime.value()-1 < 0):
 		self.updateHighscore()
 		self.resetGame()
 	else:
-		#self.lcdTime.display(self.lcdTime.intValue()-1)
 		self.barTime.setValue(self.barTime.value()-1)
-
-    '''def animateDrone(self, newPos):
-	self.animationTimer.stop()
-	animation = QtGui.QGraphicsItemAnimation()
-	animation.setItem(self.graphicsDronePixmap)
-	animation.setTimeLine(self.animationTimer)
-
-	deltaPoint = Point(0,0,0)
-	deltaPoint.x = newPos.x - self.oldDronePos.x
-	deltaPoint.y = newPos.y - self.oldDronePos.y
-
-	interval = 10
-	for i in range (0,interval):
-		tempPos = Point(0,0,0)
-		tempPos.x = self.oldDronePos.x + deltaPoint.x * i/interval
-		tempPos.y = self.oldDronePos.y + deltaPoint.y * i/interval
-		animation.setPosAt(i/interval, QtCore.QPointF(tempPos.x, tempPos.y))
-
-	self.oldDronePos = newPos;
-	self.animationTimer.start()'''
+		self.labelTime.setText(QtCore.QString.number(self.barTime.value()))
 
     def keyPressEvent(self, event):
 	# Manual control
-	if(self.gameRunning == True):
-		movePixel = 20	
-		key = event.key()
-	    	if key == QtCore.Qt.Key_W:  
-			self.currentPos.y = self.oldPos.y - movePixel
-		if key == QtCore.Qt.Key_D:  
-			self.currentPos.x = self.oldPos.x + movePixel
-		if key == QtCore.Qt.Key_A:  
-			self.currentPos.x = self.oldPos.x - movePixel
-		if key == QtCore.Qt.Key_S:  
-			self.currentPos.y = self.oldPos.y + movePixel
-		
-		if(self.currentPos.y>=0 and self.currentPos.x>=0):
-			self.oldPos = self.currentPos
-			self.moveDrone(self.currentPos)
+	movePixel = 20	
+	key = event.key()
+    	if key == QtCore.Qt.Key_W:  
+		self.currentPos.y = self.oldPos.y - movePixel
+	if key == QtCore.Qt.Key_D:  
+		self.currentPos.x = self.oldPos.x + movePixel
+	if key == QtCore.Qt.Key_A:  
+		self.currentPos.x = self.oldPos.x - movePixel
+	if key == QtCore.Qt.Key_S:  
+		self.currentPos.y = self.oldPos.y + movePixel
+	
+	if(self.currentPos.y>=0 and self.currentPos.x>=0):
+		self.oldPos = self.currentPos
+		self.moveDrone(self.currentPos)
 
     def btnExitClicked(self):    
 	rospy.signal_shutdown("Exit program")
@@ -157,27 +128,25 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.starTimer.stop()
 	self.gameTimer.stop()
 	self.labelStar.setVisible(False)
-	self.gameRunning = False  
 
     def btnStartClicked(self):  
 	self.score = 0
 	self.lcdScore.display(self.score) 
-	#self.lcdTime.display(60)
-	self.barTime.setValue(60)
+	self.labelTime.setText(QtCore.QString.number(self.gameLength))
+	self.barTime.setValue(self.gameLength)
 	self.generateStar()
 	self.labelStar.setVisible(True)
-	self.gameRunning = True
 	self.gameTimer.start(1000)
 	self.starTimer.start(100)
 
     def moveDrone(self, msg):
-	if(msg.x>0 and msg.y>0):
-		#self.animateDrone(Point(msg.x,msg.y,0))
-		#print "(x,y): ", msg.x, ",", msg.y
-		#self.graphicsDronePixmap.setPos(msg.x*2,msg.y*2)
+	if useROS == True:
+		self.labelDrone.move(self.xOffset + msg.y*3, self.yOffset + 900-msg.x*3)
+		self.oldPos.x = self.xOffset+msg.y*3
+		self.oldPos.y = self.yOffset+900-msg.x*3
+		self.currentPos = self.oldPos 
+	else:
 		self.labelDrone.move(self.xOffset + msg.x, self.yOffset + msg.y)
-
-	#self.oldPos = self.currentPos 
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
@@ -188,13 +157,14 @@ if __name__ == "__main__":
 	app = QtGui.QApplication(sys.argv)
 	gameWindow = StarGameWindow(None)
 
-	# Init ROS
-	rospy.init_node('starGameNode', anonymous=True)
-	#rospy.Subscriber("positionPublisher5", Point, gameWindow.pointCallback)
+	if useROS == True:
+		# Init ROS
+		rospy.init_node('starGameNode', anonymous=True)
+		rospy.Subscriber("positionPublisher5", Point, gameWindow.pointCallback)
 
-	# Start ros_spin in new thread since it is a blocking call
-	threadROS = Thread(target = rosThread)
-	threadROS.start()
+		# Start ros_spin in new thread since it is a blocking call
+		threadROS = Thread(target = rosThread)
+		threadROS.start()
 
 	# Show game window
 	gameWindow.show()
