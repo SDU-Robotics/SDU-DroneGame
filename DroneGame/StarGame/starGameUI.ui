@@ -331,14 +331,20 @@ QProgressBar {
    <property name="title">
     <string/>
    </property>
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="QLabel" name="labelBackground">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>910</width>
-      <height>910</height>
+      <width>911</width>
+      <height>911</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>Bagground</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

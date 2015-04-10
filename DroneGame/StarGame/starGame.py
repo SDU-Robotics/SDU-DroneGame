@@ -40,6 +40,11 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	logoScaledPixmap = logoPixmap.scaled(logoPixmap.width()/1.7,logoPixmap.height()/1.7, QtCore.Qt.KeepAspectRatio)
 	self.labelLogo.setPixmap(logoScaledPixmap)
 
+	# Setup bagground
+	bgPixmap = QtGui.QPixmap('images/bg.png')
+	bgScaledPixmap = bgPixmap.scaled(900,900, QtCore.Qt.KeepAspectRatio)
+	self.labelBackground.setPixmap(bgScaledPixmap)
+
 	# Load star image.
 	starPixmap = QtGui.QPixmap('images/apple.png')
 	starScaledPixmap = starPixmap.scaled(50,50, QtCore.Qt.KeepAspectRatio)
