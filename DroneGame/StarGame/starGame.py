@@ -88,7 +88,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		self.lcdHighscore.display(self.highscore)
 
     def starTimerCallback(self):
-	if(abs(self.starPos.x-self.currentPos.x-600)<50 and abs(self.starPos.y-self.currentPos.y)<50):
+	if(abs(self.starPos.x-self.currentPos.x)<50 and abs(self.starPos.y-self.currentPos.y)<50):
 		self.updateScore()
 		self.generateStar()
 	
@@ -162,13 +162,15 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.starTimer.start(100)
 
     def moveDrone(self, msg):
-	if(msg.x>0 and msg.y>0):
+	#if(msg.x>0 and msg.y>0):
 		#self.animateDrone(Point(msg.x,msg.y,0))
 		#print "(x,y): ", msg.x, ",", msg.y
 		#self.graphicsDronePixmap.setPos(msg.x*2,msg.y*2)
-		self.labelDrone.move(self.xOffset + msg.x, self.yOffset + msg.y)
+	self.labelDrone.move(self.xOffset + msg.y*3, self.yOffset + 900-msg.x*3)
 
-	#self.oldPos = self.currentPos 
+	self.oldPos.x = self.xOffset+msg.y*3
+	self.oldPos.y = self.yOffset+900-msg.x*3
+	self.currentPos = self.oldPos 
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
@@ -181,7 +183,7 @@ if __name__ == "__main__":
 
 	# Init ROS
 	rospy.init_node('starGameNode', anonymous=True)
-	#rospy.Subscriber("positionPublisher5", Point, gameWindow.pointCallback)
+	rospy.Subscriber("positionPublisher5", Point, gameWindow.pointCallback)
 
 	# Start ros_spin in new thread since it is a blocking call
 	threadROS = Thread(target = rosThread)
