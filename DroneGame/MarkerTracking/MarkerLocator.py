@@ -6,6 +6,7 @@ import os
 
 sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
 import cv
+import numpy
 import math
 import signal
 
@@ -89,6 +90,7 @@ class CameraDriver:
     def getImage(self):
         # Get image from camera.
         self.currentFrame = cv.QueryFrame(self.camera)
+	#self.processedFrame = self.currentFrame
         
     def processFrame(self):
         # Locate all markers in image.
@@ -111,13 +113,12 @@ class CameraDriver:
         for k in range(len(self.trackers)):
             xm = self.oldLocations[k].x
             ym = self.oldLocations[k].y
-            orientation = self.oldLocations[k].theta
+            orientation = 0
             cv.Circle(self.processedFrame, (xm, ym), 4, (55, 55, 255), 2)
             xm2 = int(xm + 50*math.cos(orientation))
             ym2 = int(ym + 50*math.sin(orientation))
             cv.Line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
 
-    
     def showProcessedFrame(self):
         cv.ShowImage('filterdemo', self.currentFrame)
         pass
@@ -127,7 +128,6 @@ class CameraDriver:
         for k in range(len(self.trackers)):
             self.oldLocations[k] = MarkerPose(None, None, None, None)
 
-        
     def handleKeyboardEvents(self):
         # Listen for keyboard events and take relevant actions.
         key = cv.WaitKey(20) 
@@ -148,12 +148,12 @@ class CameraDriver:
         # Return list of all marker locations.
         return self.oldLocations
  
-    def signal_handler(self, signal, frame):
+    def signalHandler(self, signal, frame):
 	self.running = False
 
     def publishImageFrame(self, RP):
-	RP.publishImage(self.currentFrame)
-
+	im = numpy.asarray(self.currentFrame[:,:])
+	RP.publishImage(im)
 
 class RosPublisher:
     def __init__(self, markers):
@@ -163,13 +163,13 @@ class RosPublisher:
         self.markers = markers
 	self.bridge = CvBridge()
         for i in markers:
-            self.pub.append( rospy.Publisher('positionPublisher' + str(i), Point)  )     
-	self.imagePub = rospy.Publisher("imagePublisher",Image)
+            self.pub.append(rospy.Publisher('positionPublisher' + str(i), Point))     
+	self.imagePub = rospy.Publisher("imagePublisher", Image)
         rospy.init_node('DroneLocator')   
 
     def publishImage(self, Image):
 	try:
-		self.imagePub.publish(self.bridge.cv2_to_imgmsg(Image))
+		self.imagePub.publish(self.bridge.cv2_to_imgmsg(Image, 'bgr8'))
 	except CvBridgeError, e:
         	print e
 
@@ -189,34 +189,27 @@ def main():
         RP = RosPublisher(toFind)
        
     cd = CameraDriver(toFind, defaultKernelSize = 15, cameraNumber = 0) 
-     
-    signal.signal(signal.SIGINT, cd.signal_handler)
+    signal.signal(signal.SIGINT, cd.signalHandler)
     pointLocationsInImage = [[369, 16], [1020, 32], [1000, 677], [362, 657]]
     realCoordinates = [[0, 0], [300, 0], [300, 300], [0, 300]]
     perspectiveConverter = PerspectiveCorrecter(pointLocationsInImage, realCoordinates)
  
     while cd.running:
         cd.getImage()
-        timestamp = time()
         cd.processFrame()
-	if not PublishToROS:
-        	cd.drawDetectedMarkers()
-	        cd.showProcessedFrame()
+	y = cd.returnPositions() 
+	
+	if PublishToROS: 
+		RP.publishMarkerLocations(perspectiveConverter.convertPose(y[0]))
+	    	cd.publishImageFrame(RP)
+	else:
+        	#cd.drawDetectedMarkers()
 	        cd.handleKeyboardEvents()
-        y = cd.returnPositions()     
-        if PublishToROS:
-            RP.publishMarkerLocations(perspectiveConverter.convertPose(y[0]))
-	    #cd.publishImageFrame(RP)
-        else:
-            pass
-            #print y
-            for k in range(len(y)):
-                try:
-		    if not PublishToROS:
-                    	poseCorrected = perspectiveConverter.convertPose(y[k])
-	                print "x: ", poseCorrected.x, " y: ", poseCorrected.y
-                except:
-                    pass      
-            
+	        cd.showProcessedFrame()
+           	poseCorrected = perspectiveConverter.convertPose(y[0])
+	    	print "x: ", poseCorrected.x, " y: ", poseCorrected.y
+        
     print("Stopping")
+
 main()
+

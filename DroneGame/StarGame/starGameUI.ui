@@ -347,6 +347,44 @@ QProgressBar {
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="labelApple">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>130</y>
+      <width>200</width>
+      <height>200</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+      <italic>false</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Apple</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelDrone">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>90</y>
+      <width>200</width>
+      <height>200</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Drone</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
@@ -382,44 +420,6 @@ QProgressBar {
      <string/>
     </property>
    </widget>
-  </widget>
-  <widget class="QLabel" name="labelDrone">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>270</y>
-     <width>200</width>
-     <height>200</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Drone</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelStar">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>270</y>
-     <width>200</width>
-     <height>200</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>URW Bookman L</family>
-     <italic>true</italic>
-    </font>
-   </property>
-   <property name="text">
-    <string>Star</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
   </widget>
  </widget>
  <resources/>
