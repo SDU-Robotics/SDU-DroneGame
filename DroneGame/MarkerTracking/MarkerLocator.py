@@ -6,6 +6,7 @@ import os
 
 sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
 import cv
+import numpy
 import math
 import signal
 
@@ -27,14 +28,12 @@ Frederik Hagelskjaer added code to publish marker locations to ROS.
 PublishToROS = True
 
 if PublishToROS:
-    #import roslib; 
-    #roslib.load_manifest('frobitLocator')
     import rospy
     from geometry_msgs.msg import Point
+    from sensor_msgs.msg import Image
+    from cv_bridge import CvBridge, CvBridgeError
+    import cv2
             
-
-
-
 class CameraDriver:
     ''' 
     Purpose: capture images from a camera and delegate procesing of the 
@@ -91,6 +90,7 @@ class CameraDriver:
     def getImage(self):
         # Get image from camera.
         self.currentFrame = cv.QueryFrame(self.camera)
+	#self.processedFrame = self.currentFrame
         
     def processFrame(self):
         # Locate all markers in image.
@@ -113,15 +113,14 @@ class CameraDriver:
         for k in range(len(self.trackers)):
             xm = self.oldLocations[k].x
             ym = self.oldLocations[k].y
-            orientation = self.oldLocations[k].theta
+            orientation = 0
             cv.Circle(self.processedFrame, (xm, ym), 4, (55, 55, 255), 2)
             xm2 = int(xm + 50*math.cos(orientation))
             ym2 = int(ym + 50*math.sin(orientation))
             cv.Line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
 
-    
     def showProcessedFrame(self):
-        cv.ShowImage('filterdemo', self.processedFrame)
+        cv.ShowImage('filterdemo', self.currentFrame)
         pass
 
     def resetAllLocations(self):
@@ -129,7 +128,6 @@ class CameraDriver:
         for k in range(len(self.trackers)):
             self.oldLocations[k] = MarkerPose(None, None, None, None)
 
-        
     def handleKeyboardEvents(self):
         # Listen for keyboard events and take relevant actions.
         key = cv.WaitKey(20) 
@@ -144,14 +142,18 @@ class CameraDriver:
             # save image
             print("Saving image")
             filename = strftime("%Y-%m-%d %H-%M-%S")
-            cv.SaveImage("output/%s.png" % filename, self.currentFrame)
+            cv.SaveImage("pictures/%s.png" % filename, self.currentFrame)
 
     def returnPositions(self):
         # Return list of all marker locations.
         return self.oldLocations
  
-    def signal_handler(self, signal, frame):
+    def signalHandler(self, signal, frame):
 	self.running = False
+
+    def publishImageFrame(self, RP):
+	im = numpy.asarray(self.currentFrame[:,:])
+	RP.publishImage(im)
 
 class RosPublisher:
     def __init__(self, markers):
@@ -159,18 +161,25 @@ class RosPublisher:
         # will be tracked.
         self.pub = []
         self.markers = markers
+	self.bridge = CvBridge()
         for i in markers:
-            self.pub.append( rospy.Publisher('positionPublisher' + str(i), Point)  )       
+            self.pub.append(rospy.Publisher('positionPublisher' + str(i), Point))     
+	self.imagePub = rospy.Publisher("imagePublisher", Image)
         rospy.init_node('DroneLocator')   
+
+    def publishImage(self, Image):
+	try:
+		self.imagePub.publish(self.bridge.cv2_to_imgmsg(Image, 'bgr8'))
+	except CvBridgeError, e:
+        	print e
 
     def publishMarkerLocations(self, locations):
         j = 0        
         #for i in self.markers:
            # print 'x%i %i  y%i %i  o%i %i' %(i, locations[j][0], i, locations[j][1], i, locations[j][2])
             #ros function        
-        self.pub[j].publish(  Point( locations.x, locations.y, 0 )  )
-        j = j + 1                
-        
+        self.pub[j].publish(Point(locations.x, locations.y, 0))
+        #j = j + 1                
 
 
 def main():
@@ -180,35 +189,27 @@ def main():
         RP = RosPublisher(toFind)
        
     cd = CameraDriver(toFind, defaultKernelSize = 15, cameraNumber = 0) 
-     
-    signal.signal(signal.SIGINT, cd.signal_handler)
-    pointLocationsInImage = [[320, 0], [1032, 0], [1025, 712], [327, 705]]
+    signal.signal(signal.SIGINT, cd.signalHandler)
+    pointLocationsInImage = [[369, 16], [1020, 32], [1000, 677], [362, 657]]
     realCoordinates = [[0, 0], [300, 0], [300, 300], [0, 300]]
     perspectiveConverter = PerspectiveCorrecter(pointLocationsInImage, realCoordinates)
  
     while cd.running:
         cd.getImage()
-        timestamp = time()
         cd.processFrame()
-	if not PublishToROS:
-        	cd.drawDetectedMarkers()
-	        cd.showProcessedFrame()
+	y = cd.returnPositions() 
+	
+	if PublishToROS: 
+		RP.publishMarkerLocations(perspectiveConverter.convertPose(y[0]))
+	    	cd.publishImageFrame(RP)
+	else:
+        	#cd.drawDetectedMarkers()
 	        cd.handleKeyboardEvents()
-        y = cd.returnPositions()     
-        if PublishToROS:
-            RP.publishMarkerLocations(perspectiveConverter.convertPose(y[0]))
-        else:
-            pass
-            #print y
-            for k in range(len(y)):
-                try:
-		    if not PublishToROS:
-                    	poseCorrected = perspectiveConverter.convertPose(y[k])
-	                print "x: ", poseCorrected.x, " y: ", poseCorrected.y
-                    #print("%8.3f %8.3f" % (poseCorrected.x, poseCorrected.y))
-		    #print "x: ", poseCorrected.x, " y: ", poseCorrected.y, " timestamp: ", timestamp
-                except:
-                    pass      
-            
+	        cd.showProcessedFrame()
+           	poseCorrected = perspectiveConverter.convertPose(y[0])
+	    	print "x: ", poseCorrected.x, " y: ", poseCorrected.y
+        
     print("Stopping")
+
 main()
+
