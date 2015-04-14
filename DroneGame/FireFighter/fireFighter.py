@@ -2,22 +2,70 @@
 import sys
 import rospy
 from PyQt4 import QtCore, QtGui, uic
+from PyQt4.QtCore import QObject, pyqtSignal
 from threading import Thread
 from geometry_msgs.msg import Point
-
+from random import randint
+from math import sqrt
 # Load GUI
-formClass = uic.loadUiType("fireFighterUI.ui")[0]
+formClass = uic.loadUiType("fireFighterUI.ui")[0]               
 
 # Ros spin thread
 def rosThread():
 	rospy.spin()
 	
+class AnimalObj:
+	def __init__(self, obj, combinedImg):
+		self.obj = obj
+		self.combinedImg = combinedImg
+		self.rescued = False
+
+	def setRescued(self, rescued):
+		self.rescued = rescued
+
+	def isRescued(self):
+		return self.rescued
 # My QT class
 class StarGameWindow(QtGui.QMainWindow, formClass):
+    trigger = pyqtSignal(str)
+
     def __init__(self, parent=None):
 	# Setup QT gui
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+
+	self.firstrun = False
+
+
+	# Variables	
+	self.gameRunning = False
+	self.score = 5
+	self.highscore = 0
+	self.updateScore()
+	self.xOffset = 800
+	self.yOffset = 100
+	self.animalLabels = []
+
+	self.animalLabels.append( AnimalObj( self.labelAnimalPig, "images/droneAnimalPigCombined.png" ) )
+	self.animalLabels.append( AnimalObj( self.labelAnimalPanda, "images/droneAnimalPandaCombined.png" ) )
+	self.animalLabels.append( AnimalObj( self.labelAnimalCow, "images/droneAnimalCowCombined.png" ) )
+	self.animalLabels.append( AnimalObj( self.labelAnimalTiger, "images/droneAnimalTigerCombined.png" ) )
+	self.animalLabels.append( AnimalObj( self.labelAnimalLion, "images/droneAnimalLionCombined.png" ) )
+	self.animalLabels.append( AnimalObj( self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png" ) )
+	self.animalLabels.append( AnimalObj( self.labelAnimalHippo, "images/droneAnimalHippoCombined.png" ) )
+
+#	self.animalLabels.append(self.labelAnimalPanda)
+#	self.animalLabels.append(self.labelAnimalCow)
+#	self.animalLabels.append(self.labelAnimalTiger)
+#	self.animalLabels.append(self.labelAnimalLion)
+#	self.animalLabels.append(self.labelAnimalRabbid)
+#	self.animalLabels.append(self.labelAnimalHippo)
+
+
+	#Setup first animal
+#	animalPigPixmap = QtGui.QPixmap('images/animalPig.png')
+        #animalPigScaledPixmap = animalPigPixmap.scaled(100,100, QtCore.Qt.KeepAspectRatio)
+#	self.labelAnimalPig.setPixmap(animalPigPixmap)
 
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
@@ -29,8 +77,13 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 	# Load drone image.
 	dronePixmap = QtGui.QPixmap('images/droneHighRes.png')
-	droneScaledPixmap = dronePixmap.scaled(90,90, QtCore.Qt.KeepAspectRatio)
-	self.labelDrone.setPixmap(droneScaledPixmap)
+#	droneScaledPixmap = dronePixmap.scaled(90,90, QtCore.Qt.KeepAspectRatio)
+	self.labelDrone.setPixmap(dronePixmap)
+
+	# Load star image.
+	burningHousePixmap = QtGui.QPixmap('images/ringOfFire.png')
+#	burningHouseScaledPixmap = burningHousePixmap.scaled(400,470, QtCore.Qt.KeepAspectRatio)
+	self.labelBurningHouse.setPixmap(burningHousePixmap)
 
 	# Graphics scene stuff
 	'''scene = QtGui.QGraphicsScene()
@@ -52,12 +105,40 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         self.btnReset.clicked.connect(self.btnResetClicked)  
         self.btnStart.clicked.connect(self.btnStartClicked)  
 
+
+	self.trigger.connect(self.handle_trigger)
+    def handle_trigger(self, string):
+	self.labelDrone.setPixmap(QtGui.QPixmap(string))
+	self.labelDrone.move(100,100)
+
+    def resetGame(self):
+	self.score = 0
+	self.lcdScore.display(self.score)
+
+    def generateStar(self):
+	randX =	randint(self.xOffset,self.xOffset+600)
+	randY =	randint(self.yOffset,self.yOffset+600)
+	self.labelStar.move(randX,randY)
+
+    def updateScore(self):
+	self.score += 1
+	self.lcdScore.display(self.score)
+
+    def updateHighscore(self):
+	if(self.highscore < self.score):
+		self.highscore = self.score
+		self.lcdHighscore.display(self.highscore)
+
     def gameTimerCallback(self):
 	#print self.lcdTime.intValue()
 	if (self.lcdTime.intValue()-1 < 0):
 		self.gameTimer.stop()
+		self.updateHighscore()
+		self.resetGame()
 	else:
 		self.lcdTime.display(self.lcdTime.intValue()-1)
+		self.updateScore()
+		self.generateStar()
 
     def animateDrone(self, newPos):
 	self.animationTimer.stop()
@@ -79,23 +160,55 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.oldDronePos = newPos;
 	self.animationTimer.start()
 
+    def keyPressEvent(self, event):	
+	key = event.key()
+	if event.isAutoRepeat():
+	    	if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_A: 
+			print "A"
+
+	    	if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_S:
+			print "S"
+
     def btnExitClicked(self):    
 	rospy.signal_shutdown("Exit program")
 	QtGui.QApplication.quit()
 
-    def btnResetClicked(self):    
+    def btnResetClicked(self):
 	self.gameTimer.stop()
 	self.lcdTime.display(60)
 
-    def btnStartClicked(self):    
+    def btnStartClicked(self):
+	self.resetGame()
 	self.gameTimer.start(1000)
 
     def moveDrone(self, msg):
 	if(msg.x>0 and msg.y>0):
-		#self.animateDrone(Point(msg.x,msg.y,0))
-		#print "(x,y): ", msg.x, ",", msg.y
-		#self.graphicsDronePixmap.setPos(msg.x*2,msg.y*2)
-		self.labelDrone.move(800+msg.x,100+msg.y)
+#		if self.firstrun == False:
+#			msg.x = 280
+#			msg.y = 660
+#			self.firstrun = True
+#		else:
+#			msg.x+=1
+#			msg.y+=1
+#		self.labelDrone.move(self.xOffset + msg.x, self.yOffset + msg.y)
+		dronex = msg.x*3 + 670
+		droney = msg.y*3 + 60
+
+		self.labelDrone.move(dronex,droney)
+		if self.isCarryingAnimal == False:
+			for animal in self.animalLabels:
+				if not animal.isRescued():
+					dist = sqrt((msg.x - animal.obj.x())**2 + (msg.y - animal.obj.y())**2)
+					if dist < 10:
+						animal.obj.setVisible(False)
+						self.trigger.emit(animal.combinedImg)
+						animal.setRescued(True)
+		else:
+			if dronex > 1350 and droney < 330:
+				self.isCarryingAnimal = False
+				print "Dropping of animal"
+				self.trigger.emit("images/droneHighRes.png")
+				self.updateScore()
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
@@ -116,7 +229,7 @@ if __name__ == "__main__":
 
 	# Show game window
 	gameWindow.show()
-#	gameWindow.showFullScreen()
+	#gameWindow.showFullScreen()
 	app.exec_()
 
 

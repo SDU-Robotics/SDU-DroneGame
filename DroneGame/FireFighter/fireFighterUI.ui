@@ -284,6 +284,189 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      </rect>
     </property>
    </widget>
+   <widget class="QLabel" name="labelBurningHouse">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>350</y>
+      <width>450</width>
+      <height>529</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/ringOfFire.png</pixmap>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalPig">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>720</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalPig.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalPanda">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>720</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalPanda.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalHippo">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>660</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalHippo.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalCow">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>650</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalCow.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalLion">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>660</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalLion.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalTiger">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>590</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalTiger.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalRabbid">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>600</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalRabbid.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelFarmFence">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>0</y>
+      <width>261</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/fenceGoal.png</pixmap>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
@@ -351,14 +534,14 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
   <widget class="QLabel" name="labelDrone">
    <property name="geometry">
     <rect>
-     <x>600</x>
-     <y>740</y>
-     <width>200</width>
-     <height>200</height>
+     <x>100</x>
+     <y>320</y>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="text">
-    <string>X</string>
+    <string>Drone</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
