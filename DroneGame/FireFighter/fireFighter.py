@@ -35,7 +35,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         self.setupUi(self)
 
 	self.firstrun = False
-
+	self.isCarryingAnimal = False
 
 	# Variables	
 	self.gameRunning = False
