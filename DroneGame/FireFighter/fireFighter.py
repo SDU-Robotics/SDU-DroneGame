@@ -2,6 +2,7 @@
 import sys
 import rospy
 from PyQt4 import QtCore, QtGui, uic
+from PyQt4.QtGui import *
 from PyQt4.QtCore import QObject, pyqtSignal
 from threading import Thread
 from geometry_msgs.msg import Point
@@ -46,13 +47,13 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.yOffset = 100
 	self.animalLabels = []
 
-	self.animalLabels.append( AnimalObj( self.labelAnimalPig, "images/droneAnimalPigCombined.png" ) )
-	self.animalLabels.append( AnimalObj( self.labelAnimalPanda, "images/droneAnimalPandaCombined.png" ) )
+	#self.animalLabels.append( AnimalObj( self.labelAnimalPig, "images/droneAnimalPigCombined.png" ) )
+	#self.animalLabels.append( AnimalObj( self.labelAnimalPanda, "images/droneAnimalPandaCombined.png" ) )
 	self.animalLabels.append( AnimalObj( self.labelAnimalCow, "images/droneAnimalCowCombined.png" ) )
 	self.animalLabels.append( AnimalObj( self.labelAnimalTiger, "images/droneAnimalTigerCombined.png" ) )
-	self.animalLabels.append( AnimalObj( self.labelAnimalLion, "images/droneAnimalLionCombined.png" ) )
+	#self.animalLabels.append( AnimalObj( self.labelAnimalLion, "images/droneAnimalLionCombined.png" ) )
 	self.animalLabels.append( AnimalObj( self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png" ) )
-	self.animalLabels.append( AnimalObj( self.labelAnimalHippo, "images/droneAnimalHippoCombined.png" ) )
+	#self.animalLabels.append( AnimalObj( self.labelAnimalHippo, "images/droneAnimalHippoCombined.png" ) )
 
 #	self.animalLabels.append(self.labelAnimalPanda)
 #	self.animalLabels.append(self.labelAnimalCow)
@@ -81,9 +82,43 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.labelDrone.setPixmap(dronePixmap)
 
 	# Load star image.
-	burningHousePixmap = QtGui.QPixmap('images/ringOfFire.png')
-#	burningHouseScaledPixmap = burningHousePixmap.scaled(400,470, QtCore.Qt.KeepAspectRatio)
-	self.labelBurningHouse.setPixmap(burningHousePixmap)
+	#burningHousePixmap = QtGui.QPixmap('images/ringOfFire.png')
+#	#burningHouseScaledPixmap = burningHousePixmap.scaled(400,470, QtCore.Qt.KeepAspectRatio)
+	#self.labelBurningHouse.setPixmap(burningHousePixmap)
+
+
+        # Load the file into a QMovie
+        self.movie = QMovie("images/bonfire.gif")
+ 
+        #size = self.movie.scaledSize()
+        #self.setGeometry(200, 200, size.width(), size.height())
+ 
+        #self.movie_screen = QLabel()
+        # Make label fit the gif
+        #self.labelLogo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        #self.labelLogo.setAlignment(QtCore.Qt.AlignCenter)
+ 
+        # Create the layout
+        #main_layout = QVBoxLayout()
+        #main_layout.addWidget(self.movie_screen)
+ 
+        #self.setLayout(main_layout)
+ 
+        # Add the QMovie object to the label
+        self.movie.setCacheMode(QMovie.CacheAll)
+        #self.movie.setSpeed(100)
+        self.labelFire1.setMovie(self.movie)
+	self.labelFire2.setMovie(self.movie)
+	self.labelFire3.setMovie(self.movie)
+	self.labelFire4.setMovie(self.movie)
+	self.labelFire5.setMovie(self.movie)
+	self.labelFire6.setMovie(self.movie)
+
+        self.movie.start()
+
+
+
+
 
 	# Graphics scene stuff
 	'''scene = QtGui.QGraphicsScene()
@@ -109,7 +144,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.trigger.connect(self.handle_trigger)
     def handle_trigger(self, string):
 	self.labelDrone.setPixmap(QtGui.QPixmap(string))
-	self.labelDrone.move(100,100)
 
     def resetGame(self):
 	self.score = 0
@@ -183,23 +217,24 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
     def moveDrone(self, msg):
 	if(msg.x>0 and msg.y>0):
-#		if self.firstrun == False:
-#			msg.x = 280
-#			msg.y = 660
-#			self.firstrun = True
-#		else:
-#			msg.x+=1
-#			msg.y+=1
-#		self.labelDrone.move(self.xOffset + msg.x, self.yOffset + msg.y)
-		dronex = msg.x*3 + 670
-		droney = msg.y*3 + 60
+		transfx = msg.y
+		transfy = msg.x
+
+		dronex = transfx*3 + 670
+		droney = transfy*3 + 60
+
+		print "Drone x", dronex
+
+		droneWindowx = transfx*3
+		droneWindowy = transfy*3
 
 		self.labelDrone.move(dronex,droney)
 		if self.isCarryingAnimal == False:
 			for animal in self.animalLabels:
 				if not animal.isRescued():
-					dist = sqrt((msg.x - animal.obj.x())**2 + (msg.y - animal.obj.y())**2)
-					if dist < 10:
+					dist = sqrt((droneWindowx - animal.obj.x())**2 + (droneWindowy - animal.obj.y())**2)
+					print "Animal dist: ", dist
+					if dist < 30:
 						animal.obj.setVisible(False)
 						self.trigger.emit(animal.combinedImg)
 						animal.setRescued(True)
