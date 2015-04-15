@@ -453,6 +453,69 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <pixmap>images/farm_corner.png</pixmap>
     </property>
    </widget>
+   <widget class="QLabel" name="labelAnimalCowFarm">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>120</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">display:none;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalCow.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalRabbidFarm">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>40</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalRabbid.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelAnimalTigerFarm">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>40</y>
+      <width>72</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">display:none;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/animalTiger.png</pixmap>
+    </property>
+   </widget>
    <zorder>graphicsView</zorder>
    <zorder>labelAnimalCow</zorder>
    <zorder>labelAnimalTiger</zorder>
@@ -465,6 +528,9 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <zorder>labelFire5</zorder>
    <zorder>label_4</zorder>
    <zorder>labelDrone</zorder>
+   <zorder>labelAnimalCowFarm</zorder>
+   <zorder>labelAnimalRabbidFarm</zorder>
+   <zorder>labelAnimalTigerFarm</zorder>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
@@ -506,7 +572,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string notr="true">QLabel { background-color : transparent; color : black; }</string>
     </property>
     <property name="text">
-     <string>Vild med dyr</string>
+     <string>Vilde vener</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
