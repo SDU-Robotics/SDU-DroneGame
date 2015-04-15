@@ -43,7 +43,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
         self.setupUi(self)
 
 	self.firstrun = False
-	self.isCarryingAnimal = False
+	self.CarryingAnimal = None
 
 	# Variables	
 	self.gameRunning = False
@@ -59,8 +59,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalTigerCombined.png") )
 	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png") )
 
-	for self.animalLabels as label:
-		label.farmobj.hideFarm()
+	for label in self.animalLabels:
+		label.hideFarm()
 
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
@@ -202,7 +202,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		droneWindowy = transfy*3
 
 		self.labelDrone.move(dronex,droney)
-		if self.isCarryingAnimal == False:
+		if self.CarryingAnimal == None:
 			for animal in self.animalLabels:
 				if not animal.isRescued():
 					dist = sqrt((droneWindowx - animal.obj.x())**2 + (droneWindowy - animal.obj.y())**2)
@@ -210,17 +210,15 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 						animal.obj.setVisible(False)
 						self.trigger.emit(animal.combinedImg)
 						animal.setRescued(True)
-						self.isCarryingAnimal = True
+						self.CarryingAnimal = animal
 		else:
 			if dronex > 1245 and droney < 220:
-				self.isCarryingAnimal = False
 				print "Dropping of animal"
 				self.trigger.emit("images/droneHighRes.png")
 				self.updateScore()
 
-
-
-				self.animal.farmobj.show()
+				self.CarryingAnimal.showFarm()
+				self.CarryingAnimal = None
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
