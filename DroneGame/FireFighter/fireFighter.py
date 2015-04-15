@@ -16,7 +16,8 @@ def rosThread():
 	rospy.spin()
 	
 class AnimalObj:
-	def __init__(self, obj, combinedImg):
+	def __init__(self,farmobj,  obj, combinedImg):
+		self.farmobj = farmobj
 		self.obj = obj
 		self.combinedImg = combinedImg
 		self.rescued = False
@@ -26,6 +27,12 @@ class AnimalObj:
 
 	def isRescued(self):
 		return self.rescued
+
+	def hideFarm(self):
+		self.farmobj.hide()
+
+	def showFarm(self):
+		self.farmobj.show()
 # My QT class
 class StarGameWindow(QtGui.QMainWindow, formClass):
     trigger = pyqtSignal(str)
@@ -47,26 +54,13 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.yOffset = 100
 	self.animalLabels = []
 
-	#self.animalLabels.append( AnimalObj( self.labelAnimalPig, "images/droneAnimalPigCombined.png" ) )
-	#self.animalLabels.append( AnimalObj( self.labelAnimalPanda, "images/droneAnimalPandaCombined.png" ) )
-	self.animalLabels.append( AnimalObj( self.labelAnimalCow, "images/droneAnimalCowCombined.png" ) )
-	self.animalLabels.append( AnimalObj( self.labelAnimalTiger, "images/droneAnimalTigerCombined.png" ) )
-	#self.animalLabels.append( AnimalObj( self.labelAnimalLion, "images/droneAnimalLionCombined.png" ) )
-	self.animalLabels.append( AnimalObj( self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png" ) )
-	#self.animalLabels.append( AnimalObj( self.labelAnimalHippo, "images/droneAnimalHippoCombined.png" ) )
+	# Create list of animalObjects
+	self.animalLabels.append( AnimalObj( self.labelAnimalCowFarm, self.labelAnimalCow, "images/droneAnimalCowCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalTigerCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png") )
 
-#	self.animalLabels.append(self.labelAnimalPanda)
-#	self.animalLabels.append(self.labelAnimalCow)
-#	self.animalLabels.append(self.labelAnimalTiger)
-#	self.animalLabels.append(self.labelAnimalLion)
-#	self.animalLabels.append(self.labelAnimalRabbid)
-#	self.animalLabels.append(self.labelAnimalHippo)
-
-
-	#Setup first animal
-#	animalPigPixmap = QtGui.QPixmap('images/animalPig.png')
-        #animalPigScaledPixmap = animalPigPixmap.scaled(100,100, QtCore.Qt.KeepAspectRatio)
-#	self.labelAnimalPig.setPixmap(animalPigPixmap)
+	for self.animalLabels as label:
+		label.farmobj.hideFarm()
 
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
@@ -78,35 +72,14 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 	# Load drone image.
 	dronePixmap = QtGui.QPixmap('images/droneHighRes.png')
-#	droneScaledPixmap = dronePixmap.scaled(90,90, QtCore.Qt.KeepAspectRatio)
 	self.labelDrone.setPixmap(dronePixmap)
-
-	# Load star image.
-	#burningHousePixmap = QtGui.QPixmap('images/ringOfFire.png')
-#	#burningHouseScaledPixmap = burningHousePixmap.scaled(400,470, QtCore.Qt.KeepAspectRatio)
-	#self.labelBurningHouse.setPixmap(burningHousePixmap)
-
 
         # Load the file into a QMovie
         self.movie = QMovie("images/bonfire.gif")
  
-        #size = self.movie.scaledSize()
-        #self.setGeometry(200, 200, size.width(), size.height())
- 
-        #self.movie_screen = QLabel()
-        # Make label fit the gif
-        #self.labelLogo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        #self.labelLogo.setAlignment(QtCore.Qt.AlignCenter)
- 
-        # Create the layout
-        #main_layout = QVBoxLayout()
-        #main_layout.addWidget(self.movie_screen)
- 
-        #self.setLayout(main_layout)
- 
         # Add the QMovie object to the label
         self.movie.setCacheMode(QMovie.CacheAll)
-        #self.movie.setSpeed(100)
+
         self.labelFire1.setMovie(self.movie)
 	self.labelFire2.setMovie(self.movie)
 	self.labelFire3.setMovie(self.movie)
@@ -157,6 +130,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
     def updateScore(self):
 	self.score += 1
 	self.lcdScore.display(self.score)
+
+	self.updateHighscore()
 
     def updateHighscore(self):
 	if(self.highscore < self.score):
@@ -242,6 +217,10 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 				print "Dropping of animal"
 				self.trigger.emit("images/droneHighRes.png")
 				self.updateScore()
+
+
+
+				self.animal.farmobj.show()
 
     def pointCallback(self, msg):
 	self.moveDrone(msg)
