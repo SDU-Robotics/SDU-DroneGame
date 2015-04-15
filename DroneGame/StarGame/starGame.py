@@ -13,7 +13,8 @@ from random import randint
 formClass = uic.loadUiType("starGameUI.ui")[0]               
 
 # Define use ROS
-useROS = True
+useROS = False
+nStars = 3
 
 # Ros spin thread
 def rosThread():
@@ -37,10 +38,25 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	self.maxAppleRange = Point(770,770,0)
 	centerPoint = (self.maxDroneRange.x-self.minDroneRange.x)/2
 	self.dronePos = Point(centerPoint,centerPoint,0)
-	self.applePos = Point(0,0,0)	
+	self.applePos = []
+	for i in range(0, nStars):
+        	self.applePos.append(Point(0,0,0))   
 	self.cropPixels = [369,16, 1020,32, 1000,677, 362,657] # x1,y1,x2,y2,x3,y3,x4,y4 (UL, UR, DR, DL)
 	self.bridge = CvBridge()
 	self.qpm = QtGui.QPixmap()
+
+	# Load apple image.
+	applePixmap = QtGui.QPixmap('images/apple.png')
+	appleScaledPixmap = applePixmap.scaled(100,100, QtCore.Qt.KeepAspectRatio)
+	#self.labelApple.setPixmap(appleScaledPixmap)
+	#self.labelApple.setVisible(False)
+
+	# Create apple labels and add to groupbox
+	self.labelApple = []
+	for i in range(0, nStars):
+   		self.labelApple.append(QtGui.QLabel('Apple', self.gbGame))
+		self.labelApple[i].setPixmap(appleScaledPixmap)
+		self.labelApple[i].setVisible(False)
 
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
@@ -52,14 +68,11 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	self.bgPixmap = self.bgPixmap.scaled(900,900, QtCore.Qt.KeepAspectRatio)
 	self.labelBackground.setPixmap(self.bgPixmap)
 
-	# Load apple image.
-	applePixmap = QtGui.QPixmap('images/apple.png')
-	appleScaledPixmap = applePixmap.scaled(100,100, QtCore.Qt.KeepAspectRatio)
-	self.labelApple.setPixmap(appleScaledPixmap)
-	self.labelApple.setVisible(False)
-
 	# Load drone image.
-	dronePixmap = QtGui.QPixmap('images/circle.png') #droneHighResRotated
+	if useROS:
+		dronePixmap = QtGui.QPixmap('images/circle.png') #droneHighResRotated
+	else:
+		dronePixmap = QtGui.QPixmap('images/droneHighResRotated.png') #droneHighResRotated
 	droneScaledPixmap = dronePixmap.scaled(100,100, QtCore.Qt.KeepAspectRatio)
 	self.labelDrone.setPixmap(droneScaledPixmap)
 	self.labelDrone.move(centerPoint,centerPoint)
@@ -81,10 +94,16 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
         self.btnReset.clicked.connect(self.btnResetClicked)  
         self.btnStart.clicked.connect(self.btnStartClicked)  
 
-    def generateApple(self):
-	self.applePos.x = randint(self.minAppleRange.x,self.maxAppleRange.x)
-	self.applePos.y = randint(self.minAppleRange.y,self.maxAppleRange.y)
-	self.labelApple.move(self.applePos.x,self.applePos.y)
+    def generateApple(self, index):
+	if (index == -1):
+		for i in range(0,nStars):
+			self.applePos[i].x = randint(self.minAppleRange.x,self.maxAppleRange.x)
+			self.applePos[i].y = randint(self.minAppleRange.y,self.maxAppleRange.y)
+			self.labelApple[i].move(self.applePos[i].x,self.applePos[i].y)
+	else:
+		self.applePos[index].x = randint(self.minAppleRange.x,self.maxAppleRange.x)
+		self.applePos[index].y = randint(self.minAppleRange.y,self.maxAppleRange.y)
+		self.labelApple[index].move(self.applePos[index].x,self.applePos[index].y)
 
     def updateTime(self, time):
 	self.barTime.setValue(time)
@@ -100,10 +119,12 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 		self.lcdHighscore.display(self.highscore)
 
     def scoreTimerCallback(self):
-	if(abs(self.applePos.x-self.dronePos.x)<self.appleRange and abs(self.applePos.y-self.dronePos.y)<self.appleRange and self.labelApple.isVisible() == True):
-		self.updateScore(self.score+1)
-		self.generateApple()
+	for i in range(0,nStars):
+		if(abs(self.applePos[i].x-self.dronePos.x)<self.appleRange and abs(self.applePos[i].y-self.dronePos.y)<self.appleRange and self.labelApple[i].isVisible() == True):
+			self.updateScore(self.score+1)
+			self.generateApple(i)
 
+	# Use this timer to also update the video feed
 	self.bgPixmap = self.bgPixmap.scaled(900,900, QtCore.Qt.KeepAspectRatio)
 	self.labelBackground.setPixmap(self.bgPixmap)
 
@@ -169,7 +190,8 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	self.gameTimer.stop()
 
 	# Hide the apple
-	self.labelApple.setVisible(False)
+	for i in range(0,nStars):
+		self.labelApple[i].setVisible(False)
 
     def btnStartClicked(self):  
 	# Reset score and time
@@ -177,8 +199,9 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	self.updateTime(self.gameLength)
 
 	# Generate first apple and set visibility
-	self.generateApple()
-	self.labelApple.setVisible(True)
+	self.generateApple(-1)
+	for i in range(0,nStars):
+		self.labelApple[i].setVisible(True)
 
 	# Start game timers
 	self.gameTimer.start(1000)	# Timeout every 1000m

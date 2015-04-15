@@ -25,7 +25,7 @@ Structural changes allows simultaneous tracking of several markers.
 Frederik Hagelskjaer added code to publish marker locations to ROS.
 '''
 
-PublishToROS = True
+PublishToROS = False
 
 if PublishToROS:
     import rospy

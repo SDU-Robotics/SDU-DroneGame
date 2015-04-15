@@ -13,23 +13,24 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>410</y>
+     <x>130</x>
+     <y>490</y>
      <width>511</width>
-     <height>581</height>
+     <height>520</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">QGroupBox {
-    border: 2px solid gray;
+    border: 2px solid #003399;
     border-radius: 5px;
 }
+
 </string>
    </property>
    <property name="title">
@@ -39,7 +40,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>140</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -58,7 +59,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>490</y>
+      <y>430</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -73,7 +74,7 @@
     <property name="styleSheet">
      <string notr="true">QPushButton {
 color: #333;
-border: 2px solid gray;
+border: 2px solid #003399;;
 border-radius: 5px;
 padding: 5px;
 background: qradialgradient(cx: 0.3, cy: -0.4,
@@ -103,7 +104,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>490</y>
+      <y>430</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -116,7 +117,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="styleSheet">
      <string notr="true">QPushButton {
 color: #333;
-border: 2px solid gray;
+    border: 2px solid #003399;
 border-radius: 5px;
 padding: 5px;
 background: qradialgradient(cx: 0.3, cy: -0.4,
@@ -149,7 +150,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>490</y>
+      <y>430</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -162,7 +163,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="styleSheet">
      <string notr="true">QPushButton {
 color: #333;
-border: 2px solid gray;
+border: 2px solid #003399;
 border-radius: 5px;
 padding: 5px;
 background: qradialgradient(cx: 0.3, cy: -0.4,
@@ -192,7 +193,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>150</y>
+      <y>140</y>
       <width>231</width>
       <height>91</height>
      </rect>
@@ -202,7 +203,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
             background-color: #003399;
              }
 QLCDNumber {
-          border: 2px solid grey;
+    border: 2px solid #003399;
           border-radius: 5px;
           text-align: center;
        background: #ffffff;
@@ -213,7 +214,7 @@ QLCDNumber {
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>290</y>
+      <y>280</y>
       <width>231</width>
       <height>91</height>
      </rect>
@@ -223,7 +224,7 @@ QLCDNumber {
             background-color: #003399;
              }
 QLCDNumber {
-          border: 2px solid grey;
+    border: 2px solid #003399;
           border-radius: 5px;
           text-align: center;
        background: #ffffff;
@@ -234,7 +235,7 @@ QLCDNumber {
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>40</y>
+      <y>30</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -253,7 +254,7 @@ QLCDNumber {
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>290</y>
+      <y>280</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -272,7 +273,7 @@ QLCDNumber {
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>80</y>
+      <y>70</y>
       <width>201</width>
       <height>20</height>
      </rect>
@@ -282,7 +283,7 @@ QLCDNumber {
             background-color: #003399;
              }
 QProgressBar {
-          border: 2px solid grey;
+          border: 2px solid #003399;
           border-radius: 5px;
           text-align: center;
        background: #ffffff;
@@ -296,7 +297,7 @@ QProgressBar {
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>80</y>
+      <y>70</y>
       <width>21</width>
       <height>17</height>
      </rect>
@@ -308,23 +309,26 @@ QProgressBar {
       <bold>true</bold>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">    color: #003399;</string>
+    </property>
     <property name="text">
      <string>60</string>
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2">
+  <widget class="QGroupBox" name="gbGame">
    <property name="geometry">
     <rect>
-     <x>670</x>
-     <y>60</y>
+     <x>810</x>
+     <y>80</y>
      <width>931</width>
      <height>931</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">QGroupBox {
-    border: 2px solid gray;
+    border: 2px solid #003399;
     border-radius: 5px;
 }</string>
    </property>
@@ -342,28 +346,6 @@ QProgressBar {
     </property>
     <property name="text">
      <string>Bagground</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelApple">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>130</y>
-      <width>200</width>
-      <height>200</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Ubuntu</family>
-      <italic>false</italic>
-     </font>
-    </property>
-    <property name="text">
-     <string>Apple</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -389,15 +371,15 @@ QProgressBar {
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>60</y>
+     <x>130</x>
+     <y>80</y>
      <width>511</width>
      <height>261</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">QGroupBox {
-    border: 2px solid gray;
+    border: 2px solid #003399;
     border-radius: 5px;
 }</string>
    </property>
