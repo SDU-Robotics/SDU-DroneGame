@@ -283,6 +283,9 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
       <height>910</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
    </widget>
    <widget class="QLabel" name="labelAnimalCow">
     <property name="geometry">
@@ -572,7 +575,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string notr="true">QLabel { background-color : transparent; color : black; }</string>
     </property>
     <property name="text">
-     <string>Vilde vener</string>
+     <string>Vilde venner</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

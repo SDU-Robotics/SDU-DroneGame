@@ -36,6 +36,7 @@ class AnimalObj:
 # My QT class
 class StarGameWindow(QtGui.QMainWindow, formClass):
     trigger = pyqtSignal(str)
+    triggerFarm = pyqtSignal(object)
 
     def __init__(self, parent=None):
 	# Setup QT gui
@@ -45,11 +46,13 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.firstrun = False
 	self.CarryingAnimal = None
 
+
+	self.triggerFarm.connect(self.handle_trigger_farm)
+
 	# Variables	
 	self.gameRunning = False
-	self.score = 5
+	self.score = 0
 	self.highscore = 0
-	self.updateScore()
 	self.xOffset = 800
 	self.yOffset = 100
 	self.animalLabels = []
@@ -89,16 +92,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
         self.movie.start()
 
-
-
-
-
-	# Graphics scene stuff
-	'''scene = QtGui.QGraphicsScene()
-	scene.setSceneRect(0, 0, 600, 600);
-	self.graphicsView.setScene(scene)
-	self.graphicsDronePixmap = scene.addPixmap(droneScaledPixmap)'''
-
 	# Timer stuff	
 	self.animationTimer = QtCore.QTimeLine(1000/30)
 	#self.animationTimer.setFrameRange(0, 1000)
@@ -117,6 +110,10 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.trigger.connect(self.handle_trigger)
     def handle_trigger(self, string):
 	self.labelDrone.setPixmap(QtGui.QPixmap(string))
+
+
+    def handle_trigger_farm(self, obj):
+	obj.showFarm()
 
     def resetGame(self):
 	self.score = 0
@@ -217,7 +214,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 				self.trigger.emit("images/droneHighRes.png")
 				self.updateScore()
 
-				self.CarryingAnimal.showFarm()
+#				self.CarryingAnimal.showFarm()
+				self.triggerFarm.emit(self.CarryingAnimal)
 				self.CarryingAnimal = None
 
     def pointCallback(self, msg):
