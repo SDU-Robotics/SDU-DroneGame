@@ -218,12 +218,10 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
     def moveDrone(self, msg):
 	if(msg.x>0 and msg.y>0):
 		transfx = msg.y
-		transfy = msg.x
+		transfy = 300 - msg.x
 
 		dronex = transfx*3 + 670
 		droney = transfy*3 + 60
-
-		print "Drone x", dronex
 
 		droneWindowx = transfx*3
 		droneWindowy = transfy*3
@@ -233,13 +231,13 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 			for animal in self.animalLabels:
 				if not animal.isRescued():
 					dist = sqrt((droneWindowx - animal.obj.x())**2 + (droneWindowy - animal.obj.y())**2)
-					print "Animal dist: ", dist
 					if dist < 30:
 						animal.obj.setVisible(False)
 						self.trigger.emit(animal.combinedImg)
 						animal.setRescued(True)
+						self.isCarryingAnimal = True
 		else:
-			if dronex > 1350 and droney < 330:
+			if dronex > 1245 and droney < 220:
 				self.isCarryingAnimal = False
 				print "Dropping of animal"
 				self.trigger.emit("images/droneHighRes.png")
