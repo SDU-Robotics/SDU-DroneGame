@@ -1,3 +1,4 @@
+
 # Imports
 import sys
 import rospy
@@ -131,11 +132,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.score = 0
 	self.lcdScore.display(self.score)
 
-    def generateStar(self):
-	randX =	randint(self.xOffset,self.xOffset+600)
-	randY =	randint(self.yOffset,self.yOffset+600)
-	self.labelStar.move(randX,randY)
-
     def updateScore(self):
 	self.score += 1
 	self.lcdScore.display(self.score)
@@ -153,28 +149,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		self.resetGame()
 	else:
 		self.lcdTime.display(self.lcdTime.intValue()-1)
-		self.updateScore()
-		self.generateStar()
-
-    def animateDrone(self, newPos):
-	self.animationTimer.stop()
-	animation = QtGui.QGraphicsItemAnimation()
-	animation.setItem(self.graphicsDronePixmap)
-	animation.setTimeLine(self.animationTimer)
-
-	deltaPoint = Point(0,0,0)
-	deltaPoint.x = newPos.x - self.oldDronePos.x
-	deltaPoint.y = newPos.y - self.oldDronePos.y
-
-	interval = 10
-	for i in range (0,interval):
-		tempPos = Point(0,0,0)
-		tempPos.x = self.oldDronePos.x + deltaPoint.x * i/interval
-		tempPos.y = self.oldDronePos.y + deltaPoint.y * i/interval
-		animation.setPosAt(i/interval, QtCore.QPointF(tempPos.x, tempPos.y))
-
-	self.oldDronePos = newPos;
-	self.animationTimer.start()
 
     def keyPressEvent(self, event):	
 	key = event.key()
