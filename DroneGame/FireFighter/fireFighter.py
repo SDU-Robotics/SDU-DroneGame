@@ -86,6 +86,11 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	dronePixmap = QtGui.QPixmap('images/droneHighRes.png')
 	self.labelDrone.setPixmap(dronePixmap)
 
+
+        bonfirePixmap = QtGui.QPixmap('images/bonfire.gif')
+        self.labelFire1.setPixmap(bonfirePixmap)
+
+
         # Load the file into a QMovie
         self.movie = QMovie("images/bonfire.gif")
  
