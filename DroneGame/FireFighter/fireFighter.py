@@ -164,9 +164,9 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 	for animal in self.animalLabels:
 		animal.obj.show()
 		animal.hideFarm()
-
+		animal.setRescued(False)
     def updateScore(self):
-	self.score += 1
+	self.score += 15
 	self.lcdScore.display(self.score)
 
     def updateHighscore(self):
@@ -199,6 +199,7 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
     def btnResetClicked(self):
 	self.gameTimer.stop()
 	self.lcdTime.display(60)
+	self.resetGame()
 
     def btnStartClicked(self):
 	pass
@@ -240,8 +241,14 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
 				self.rescuedAnimals+=1
 				if self.rescuedAnimals == 3:
-					self.updateHighscore()
 					self.rescuedAnimals = 0
+
+					timeLeft = self.lcdTime.intValue()
+					newScore = self.score + timeLeft
+					self.lcdScore.display(newScore)
+					self.score = newScore
+					self.updateHighscore()
+
     def pointCallback(self, msg):
 	self.moveDrone(msg)
 

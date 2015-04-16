@@ -143,9 +143,9 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <widget class="QLCDNumber" name="lcdScore">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>30</y>
-      <width>231</width>
+      <width>211</width>
       <height>91</height>
      </rect>
     </property>
@@ -153,9 +153,9 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <widget class="QLCDNumber" name="lcdHighscore">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>260</y>
-      <width>231</width>
+      <width>211</width>
       <height>91</height>
      </rect>
     </property>
@@ -184,7 +184,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <rect>
       <x>20</x>
       <y>260</y>
-      <width>221</width>
+      <width>251</width>
       <height>91</height>
      </rect>
     </property>
@@ -201,9 +201,9 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <widget class="QLCDNumber" name="lcdTime">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>280</x>
       <y>150</y>
-      <width>231</width>
+      <width>211</width>
       <height>91</height>
      </rect>
     </property>
@@ -524,7 +524,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">QLabel { background-color : transparent; color : white;font-family: Arial Black,Arial Bold,Gadget,sans-serif; font-size: 70px}</string>
+     <string notr="true">QLabel { background-color : transparent; }</string>
     </property>
     <property name="text">
      <string>Vilde venner</string>
