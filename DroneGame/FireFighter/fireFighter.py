@@ -119,7 +119,8 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.trigger.connect(self.handle_trigger)
 
     def handle_background_update(self):
-	self.labelBackground.setPixmap(self.pixmap_bg)
+	pixmap_bg = self.pixmap_bg.scaled(self.labelBackground.size(), Qt.KeepAspectRatio)
+	self.labelBackground.setPixmap(pixmap_bg)
 
     def handle_trigger(self, string):
 	self.labelDrone.setPixmap(QtGui.QPixmap(string))
