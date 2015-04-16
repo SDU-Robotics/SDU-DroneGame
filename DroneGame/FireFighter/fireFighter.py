@@ -66,9 +66,9 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.animalLabels = []
 
 	# Create list of animalObjects
-	self.animalLabels.append( AnimalObj( self.labelAnimalCowFarm, self.labelAnimalCow, "images/droneAnimalFoxCombined.png") )
-	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalFox2TigerCombined.png") )
-	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalFrogCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalCowFarm, self.labelAnimalCow, "images/droneAnimalFox2Combined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalFrogCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalFoxCombined.png") )
 
 
 	# Setup logo
@@ -95,14 +95,14 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	tmpPixmap = QtGui.QPixmap('images/animalFox2.png')
 	self.labelAnimalCow.setPixmap(tmpPixmap)
 
-	self.labelAnimalTigerFarm.setPixmap(tmpPixmap)
-	self.labelAnimalTigerFarm.hide()
+	self.labelAnimalCowFarm.setPixmap(tmpPixmap)
+	self.labelAnimalCowFarm.hide()
 
 	tmpPixmap = QtGui.QPixmap('images/animalFrog.png')
 	self.labelAnimalTiger.setPixmap(tmpPixmap)
 
-	self.labelAnimalCowFarm.setPixmap(tmpPixmap)
-	self.labelAnimalCowFarm.hide()
+	self.labelAnimalTigerFarm.setPixmap(tmpPixmap)
+	self.labelAnimalTigerFarm.hide()
 
         # Load the file into a QMovie
         self.movie = QMovie("images/bonfire.gif")
