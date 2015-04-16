@@ -221,7 +221,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 						animal.setRescued(True)
 						self.CarryingAnimal = animal
 		else:
-			if dronex > 1245 and droney < 220:
+			if dronex > 1369 and droney < 261:
 				print "Dropping of animal"
 				self.trigger.emit("images/droneHighRes.png")
 				self.updateScore()
