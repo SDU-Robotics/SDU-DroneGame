@@ -8,6 +8,10 @@ from threading import Thread
 from geometry_msgs.msg import Point
 from random import randint
 from math import sqrt
+
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+import cv2
 # Load GUI
 formClass = uic.loadUiType("fireFighterUI.ui")[0]               
 
@@ -37,17 +41,21 @@ class AnimalObj:
 class StarGameWindow(QtGui.QMainWindow, formClass):
     trigger = pyqtSignal(str)
     triggerFarm = pyqtSignal(object)
+    triggerBackgroundUpdater = pyqtSignal()
 
     def __init__(self, parent=None):
 	# Setup QT gui
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
-	self.firstrun = False
 	self.CarryingAnimal = None
 
+	self.bridge = CvBridge()
 
 	self.triggerFarm.connect(self.handle_trigger_farm)
+	self.triggerBackgroundUpdater.connect(self.handle_background_update)
+
+
 
 	# Variables	
 	self.gameRunning = False
@@ -108,6 +116,10 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 
 	self.trigger.connect(self.handle_trigger)
+
+    def handle_background_update(self):
+	self.labelBackground.setPixmap(self.pixmap_bg)
+
     def handle_trigger(self, string):
 	self.labelDrone.setPixmap(QtGui.QPixmap(string))
 
@@ -127,8 +139,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
     def updateScore(self):
 	self.score += 1
 	self.lcdScore.display(self.score)
-
-	self.updateHighscore()
 
     def updateHighscore(self):
 	if(self.highscore < self.score):
@@ -221,6 +231,27 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
     def pointCallback(self, msg):
 	self.moveDrone(msg)
 
+
+    def imageCallback(self, image):
+	#self.cropPixels = [369,16, 1020,32, 1000,677, 362,657] # x1,y1,x2,y2,x3,y3,x4,y4 (UL, UR, DR, DL)
+
+	# Convert to opencv and crop image
+	cvImage = self.bridge.imgmsg_to_cv2(image)
+	#cvImage = cvImage[self.cropPixels[1]:self.cropPixels[5], self.cropPixels[0]:self.cropPixels[4]]
+	cvImage = cvImage[5:670+5,360:676+360]
+	# [startY:endY, startX:endX] 
+
+	# Rotate image	
+	rows,cols,channels = cvImage.shape
+	M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
+	cvImage = cv2.warpAffine(cvImage,M,(cols,rows))
+
+	# Convert to QImage and then QPixmap
+	cvImage = cv2.cvtColor(cvImage, cv2.cv.CV_BGR2RGB)
+	qimg = QtGui.QImage(cvImage.data, cvImage.shape[1], cvImage.shape[0], QtGui.QImage.Format_RGB888)
+	#self.bgPixmap = QtGui.QPixmap.fromImage(qimg)
+	self.pixmap_bg = QtGui.QPixmap.fromImage(qimg)
+	self.triggerBackgroundUpdater.emit()
 # Main
 if __name__ == "__main__":
 	# Load qt gui and stargame window
@@ -230,7 +261,7 @@ if __name__ == "__main__":
 	# Init ROS
 	rospy.init_node('starGameNode', anonymous=True)
 	rospy.Subscriber("positionPublisher5", Point, gameWindow.pointCallback)
-
+	rospy.Subscriber("imagePublisher", Image, gameWindow.imageCallback)
 	# Start ros_spin in new thread since it is a blocking call
 	threadROS = Thread(target = rosThread)
 	threadROS.start()

@@ -274,19 +274,6 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <property name="title">
     <string/>
    </property>
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>910</width>
-      <height>910</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelAnimalCow">
     <property name="geometry">
      <rect>
@@ -303,7 +290,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/animalCow.png</pixmap>
+     <pixmap>../../../../../../.designer/backup/images/animalCow.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="labelAnimalTiger">
@@ -322,7 +309,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/animalTiger.png</pixmap>
+     <pixmap>../../../../../../.designer/backup/images/animalTiger.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="labelAnimalRabbid">
@@ -341,7 +328,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/animalRabbid.png</pixmap>
+     <pixmap>../../../../../../.designer/backup/images/animalRabbid.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="labelFire1">
@@ -440,22 +427,6 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>200</y>
-      <width>58</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>images/farm_corner.png</pixmap>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelAnimalCowFarm">
     <property name="geometry">
      <rect>
@@ -475,7 +446,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/animalCow.png</pixmap>
+     <pixmap>../../../../../../.designer/backup/images/animalCow.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="labelAnimalRabbidFarm">
@@ -494,7 +465,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/animalRabbid.png</pixmap>
+     <pixmap>../../../../../../.designer/backup/images/animalRabbid.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="labelAnimalTigerFarm">
@@ -516,24 +487,22 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/animalTiger.png</pixmap>
+     <pixmap>../../../../../../.designer/backup/images/animalTiger.png</pixmap>
     </property>
    </widget>
-   <zorder>graphicsView</zorder>
-   <zorder>labelAnimalCow</zorder>
-   <zorder>labelAnimalTiger</zorder>
-   <zorder>labelAnimalRabbid</zorder>
-   <zorder>labelFire1</zorder>
-   <zorder>labelFire2</zorder>
-   <zorder>labelFire3</zorder>
-   <zorder>labelFire4</zorder>
-   <zorder>labelFire6</zorder>
-   <zorder>labelFire5</zorder>
-   <zorder>label_4</zorder>
-   <zorder>labelDrone</zorder>
-   <zorder>labelAnimalCowFarm</zorder>
-   <zorder>labelAnimalRabbidFarm</zorder>
-   <zorder>labelAnimalTigerFarm</zorder>
+   <widget class="QLabel" name="labelBackground">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>910</width>
+      <height>910</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
