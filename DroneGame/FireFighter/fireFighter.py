@@ -119,7 +119,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.trigger.connect(self.handle_trigger)
 
     def handle_background_update(self):
-	pixmap_bg = self.pixmap_bg.scaled(self.labelBackground.size(), Qt.KeepAspectRatio)
+	pixmap_bg = self.pixmap_bg.scaled(self.labelBackground.size(), QtCore.Qt.KeepAspectRatio)
 	self.labelBackground.setPixmap(pixmap_bg)
 
     def handle_trigger(self, string):
