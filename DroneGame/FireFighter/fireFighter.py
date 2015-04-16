@@ -66,9 +66,9 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.animalLabels = []
 
 	# Create list of animalObjects
-	self.animalLabels.append( AnimalObj( self.labelAnimalCowFarm, self.labelAnimalCow, "images/droneAnimalCowCombined.png") )
-	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalTigerCombined.png") )
-	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalCowFarm, self.labelAnimalCow, "images/droneAnimalFoxCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalFox2TigerCombined.png") )
+	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalFrogCombined.png") )
 
 
 	# Setup logo
