@@ -563,15 +563,11 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     </property>
     <property name="font">
      <font>
-      <family>Courier 10 Pitch</family>
-      <pointsize>28</pointsize>
-      <weight>75</weight>
-      <italic>false</italic>
-      <bold>true</bold>
+      <family>Arial Black,Arial 12,Gadget,sans-serif</family>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">QLabel { background-color : transparent; color : black; }</string>
+     <string notr="true">QLabel { background-color : transparent; color : white;font-family: Arial Black,Arial Bold,Gadget,sans-serif; }</string>
     </property>
     <property name="text">
      <string>Vilde venner</string>
