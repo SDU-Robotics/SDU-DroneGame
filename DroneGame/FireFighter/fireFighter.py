@@ -1,4 +1,3 @@
-
 # Imports
 import sys
 import rospy
@@ -56,7 +55,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.triggerFarm.connect(self.handle_trigger_farm)
 	self.triggerBackgroundUpdater.connect(self.handle_background_update)
 
-
+	self.labelBackground.lower()
 
 	# Variables	
 	self.gameRunning = False
@@ -71,8 +70,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalTigerCombined.png") )
 	self.animalLabels.append( AnimalObj( self.labelAnimalRabbidFarm, self.labelAnimalRabbid, "images/droneAnimalRabbidCombined.png") )
 
-	for label in self.animalLabels:
-		label.hideFarm()
 
 	# Setup logo
 	logoPixmap = QtGui.QPixmap('images/sdulogo.png')
@@ -87,8 +84,32 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.labelDrone.setPixmap(dronePixmap)
 
 
-        bonfirePixmap = QtGui.QPixmap('images/bonfire.gif')
-        self.labelFire1.setPixmap(bonfirePixmap)
+
+
+	tmpPixmap = QtGui.QPixmap('images/animalRabbid.png')
+	self.labelAnimalRabbid.setPixmap(tmpPixmap)
+
+	tmpPixmap = QtGui.QPixmap('images/animalCow.png')
+	self.labelAnimalCow.setPixmap(tmpPixmap)
+
+	tmpPixmap = QtGui.QPixmap('images/animalTiger.png')
+	self.labelAnimalTiger.setPixmap(tmpPixmap)
+
+
+
+	tmpPixmap = QtGui.QPixmap('images/animalRabbid.png')
+	self.labelAnimalRabbidFarm.setPixmap(tmpPixmap)
+	self.labelAnimalRabbidFarm.hide()
+
+	tmpPixmap = QtGui.QPixmap('images/animalCow.png')
+	self.labelAnimalCowFarm.setPixmap(tmpPixmap)
+	self.labelAnimalCowFarm.hide()
+
+	tmpPixmap = QtGui.QPixmap('images/animalTiger.png')
+	self.labelAnimalTigerFarm.setPixmap(tmpPixmap)
+	self.labelAnimalTigerFarm.hide()
+
+
 
 
         # Load the file into a QMovie
@@ -104,17 +125,18 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.labelFire5.setMovie(self.movie)
 	self.labelFire6.setMovie(self.movie)
 
+	self.labelFire1.setStyleSheet("background:transparent;")
+	self.labelFire2.setStyleSheet("background:transparent;")
+	self.labelFire3.setStyleSheet("background:transparent;")
+	self.labelFire4.setStyleSheet("background:transparent;")
+	self.labelFire5.setStyleSheet("background:transparent;")
+	self.labelFire6.setStyleSheet("background:transparent;")
         self.movie.start()
 
 	# Timer stuff	
-	self.animationTimer = QtCore.QTimeLine(1000/30)
-	#self.animationTimer.setFrameRange(0, 1000)
 	self.gameTimer = QtCore.QTimer()
 	self.gameTimer.timeout.connect(self.gameTimerCallback)
 	
-	# Old drone pos
-	self.oldDronePos = Point(0,0,0)	
-
 	# Bind the event handlers
         self.btnExit.clicked.connect(self.btnExitClicked)  
         self.btnReset.clicked.connect(self.btnResetClicked)  
@@ -188,7 +210,7 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		droneWindowx = transfx*3
 		droneWindowy = transfy*3
 
-		self.labelDrone.move(dronex,droney)
+		self.labelDrone.move(dronex-20,droney-20)
 		if self.CarryingAnimal == None:
 			for animal in self.animalLabels:
 				if not animal.isRescued():
@@ -204,7 +226,6 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 				self.trigger.emit("images/droneHighRes.png")
 				self.updateScore()
 
-#				self.CarryingAnimal.showFarm()
 				self.triggerFarm.emit(self.CarryingAnimal)
 				self.CarryingAnimal = None
 
