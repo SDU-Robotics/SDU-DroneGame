@@ -53,50 +53,6 @@
      <string>Score</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnStart">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>500</y>
-      <width>131</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
-color: #333;
-border: 2px solid #555;
-border-radius: 11px;
-padding: 5px;
-background: qradialgradient(cx: 0.3, cy: -0.4,
-fx: 0.3, fy: -0.4,
-radius: 1.35, stop: 0 #fff, stop: 1 #888);
-min-width: 80px;
-}
-
-QPushButton:hover {
-background: qradialgradient(cx: 0.3, cy: -0.4,
-fx: 0.3, fy: -0.4,
-radius: 1.35, stop: 0 #fff, stop: 1 #bbb);
-}
-
-QPushButton:pressed {
-background: qradialgradient(cx: 0.4, cy: -0.1,
-fx: 0.4, fy: -0.1,
-radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
-}</string>
-    </property>
-    <property name="text">
-     <string>Start</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnExit">
     <property name="geometry">
      <rect>
@@ -145,7 +101,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <widget class="QPushButton" name="btnReset">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>30</x>
       <y>500</y>
       <width>131</width>
       <height>51</height>
@@ -564,10 +520,11 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="font">
      <font>
       <family>Arial Black,Arial 12,Gadget,sans-serif</family>
+      <pointsize>-1</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">QLabel { background-color : transparent; color : white;font-family: Arial Black,Arial Bold,Gadget,sans-serif; }</string>
+     <string notr="true">QLabel { background-color : transparent; color : white;font-family: Arial Black,Arial Bold,Gadget,sans-serif; font-size: 70px}</string>
     </property>
     <property name="text">
      <string>Vilde venner</string>

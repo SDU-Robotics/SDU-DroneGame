@@ -38,7 +38,7 @@ class AnimalObj:
 	def showFarm(self):
 		self.farmobj.show()
 # My QT class
-class StarGameWindow(QtGui.QMainWindow, formClass):
+class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
     trigger = pyqtSignal(str)
     triggerFarm = pyqtSignal(object)
     triggerBackgroundUpdater = pyqtSignal()
@@ -65,6 +65,10 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.yOffset = 100
 	self.animalLabels = []
 
+
+	self.rescuedAnimals = 0
+
+
 	# Create list of animalObjects
 	self.animalLabels.append( AnimalObj( self.labelAnimalCowFarm, self.labelAnimalCow, "images/droneAnimalFox2Combined.png") )
 	self.animalLabels.append( AnimalObj( self.labelAnimalTigerFarm, self.labelAnimalTiger, "images/droneAnimalFrogCombined.png") )
@@ -86,10 +90,12 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 
 
+	# Load and insert animals
 	tmpPixmap = QtGui.QPixmap('images/animalFox.png')
 	self.labelAnimalRabbid.setPixmap(tmpPixmap)
 
 	self.labelAnimalRabbidFarm.setPixmap(tmpPixmap)
+	# Hide animals in farm - show when moved to farm area
 	self.labelAnimalRabbidFarm.hide()
 
 	tmpPixmap = QtGui.QPixmap('images/animalFox2.png')
@@ -117,22 +123,25 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.labelFire5.setMovie(self.movie)
 	self.labelFire6.setMovie(self.movie)
 
+	# Make the background transparent - else we'll se black boxes
 	self.labelFire1.setStyleSheet("background:transparent;")
 	self.labelFire2.setStyleSheet("background:transparent;")
 	self.labelFire3.setStyleSheet("background:transparent;")
 	self.labelFire4.setStyleSheet("background:transparent;")
 	self.labelFire5.setStyleSheet("background:transparent;")
 	self.labelFire6.setStyleSheet("background:transparent;")
+
+	#Start "movie" (gif)
         self.movie.start()
 
-	# Timer stuff	
+	# Timer stuff
 	self.gameTimer = QtCore.QTimer()
 	self.gameTimer.timeout.connect(self.gameTimerCallback)
 	
 	# Bind the event handlers
-        self.btnExit.clicked.connect(self.btnExitClicked)  
-        self.btnReset.clicked.connect(self.btnResetClicked)  
-        self.btnStart.clicked.connect(self.btnStartClicked)  
+        self.btnExit.clicked.connect(self.btnExitClicked)
+        self.btnReset.clicked.connect(self.btnResetClicked)
+#        self.btnStart.clicked.connect(self.btnStartClicked)
 
 
 	self.trigger.connect(self.handle_trigger)
@@ -152,6 +161,10 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.score = 0
 	self.lcdScore.display(self.score)
 
+	for animal in self.animalLabels:
+		animal.obj.show()
+		animal.hideFarm()
+
     def updateScore(self):
 	self.score += 1
 	self.lcdScore.display(self.score)
@@ -162,12 +175,12 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 		self.lcdHighscore.display(self.highscore)
 
     def gameTimerCallback(self):
-	#print self.lcdTime.intValue()
+	# Stop game
 	if (self.lcdTime.intValue()-1 < 0):
 		self.gameTimer.stop()
 		self.updateHighscore()
 		self.resetGame()
-	else:
+	else: # Game is running
 		self.lcdTime.display(self.lcdTime.intValue()-1)
 
     def keyPressEvent(self, event):	
@@ -188,8 +201,9 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	self.lcdTime.display(60)
 
     def btnStartClicked(self):
-	self.resetGame()
-	self.gameTimer.start(1000)
+	pass
+#	self.resetGame()
+#	self.gameTimer.start(1000)
 
     def moveDrone(self, msg):
 	if(msg.x>0 and msg.y>0):
@@ -204,6 +218,9 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 		self.labelDrone.move(dronex-20,droney-20)
 		if self.CarryingAnimal == None:
+			if self.rescuedAnimals == 0:
+				self.gameTimer.start(1000)
+
 			for animal in self.animalLabels:
 				if not animal.isRescued():
 					dist = sqrt((droneWindowx - animal.obj.x())**2 + (droneWindowy - animal.obj.y())**2)
@@ -221,20 +238,22 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 				self.triggerFarm.emit(self.CarryingAnimal)
 				self.CarryingAnimal = None
 
+				self.rescuedAnimals+=1
+				if self.rescuedAnimals == 3:
+					self.updateHighscore()
+					self.rescuedAnimals = 0
     def pointCallback(self, msg):
 	self.moveDrone(msg)
 
 
     def imageCallback(self, image):
-	#self.cropPixels = [369,16, 1020,32, 1000,677, 362,657] # x1,y1,x2,y2,x3,y3,x4,y4 (UL, UR, DR, DL)
-
 	# Convert to opencv and crop image
 	cvImage = self.bridge.imgmsg_to_cv2(image)
-	#cvImage = cvImage[self.cropPixels[1]:self.cropPixels[5], self.cropPixels[0]:self.cropPixels[4]]
-	cvImage = cvImage[5:670+5,360:676+360]
-	# [startY:endY, startX:endX] 
 
-	# Rotate image	
+	# [startY:endY, startX:endX] 
+	cvImage = cvImage[5:670+5,360:676+360]
+
+	# Rotate image
 	rows,cols,channels = cvImage.shape
 	M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
 	cvImage = cv2.warpAffine(cvImage,M,(cols,rows))
@@ -242,19 +261,20 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 	# Convert to QImage and then QPixmap
 	cvImage = cv2.cvtColor(cvImage, cv2.cv.CV_BGR2RGB)
 	qimg = QtGui.QImage(cvImage.data, cvImage.shape[1], cvImage.shape[0], QtGui.QImage.Format_RGB888)
-	#self.bgPixmap = QtGui.QPixmap.fromImage(qimg)
+
 	self.pixmap_bg = QtGui.QPixmap.fromImage(qimg)
 	self.triggerBackgroundUpdater.emit()
 # Main
 if __name__ == "__main__":
-	# Load qt gui and stargame window
+	# Load qt gui and VildeVennerGame window
 	app = QtGui.QApplication(sys.argv)
-	gameWindow = StarGameWindow(None)
+	gameWindow = VildeVennerGameWindow(None)
 
 	# Init ROS
-	rospy.init_node('starGameNode', anonymous=True)
+	rospy.init_node('VildeVennerGameNode', anonymous=True)
 	rospy.Subscriber("positionPublisher5", Point, gameWindow.pointCallback)
 	rospy.Subscriber("imagePublisher", Image, gameWindow.imageCallback)
+
 	# Start ros_spin in new thread since it is a blocking call
 	threadROS = Thread(target = rosThread)
 	threadROS.start()
