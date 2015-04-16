@@ -278,7 +278,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>670</y>
+      <y>690</y>
       <width>72</width>
       <height>68</height>
      </rect>
@@ -296,7 +296,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <widget class="QLabel" name="labelAnimalTiger">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>150</x>
       <y>600</y>
       <width>72</width>
       <height>68</height>
@@ -315,8 +315,8 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
    <widget class="QLabel" name="labelAnimalRabbid">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>600</y>
+      <x>260</x>
+      <y>590</y>
       <width>72</width>
       <height>68</height>
      </rect>
@@ -500,7 +500,7 @@ radius: 1.35, stop: 0 #fff, stop: 1 #ddd);
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="labelFarmCorner">

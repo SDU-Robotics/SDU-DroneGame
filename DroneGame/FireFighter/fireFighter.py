@@ -86,31 +86,23 @@ class StarGameWindow(QtGui.QMainWindow, formClass):
 
 
 
-	tmpPixmap = QtGui.QPixmap('images/animalRabbid.png')
+	tmpPixmap = QtGui.QPixmap('images/animalFox.png')
 	self.labelAnimalRabbid.setPixmap(tmpPixmap)
 
-	tmpPixmap = QtGui.QPixmap('images/animalCow.png')
-	self.labelAnimalCow.setPixmap(tmpPixmap)
-
-	tmpPixmap = QtGui.QPixmap('images/animalTiger.png')
-	self.labelAnimalTiger.setPixmap(tmpPixmap)
-
-
-
-	tmpPixmap = QtGui.QPixmap('images/animalRabbid.png')
 	self.labelAnimalRabbidFarm.setPixmap(tmpPixmap)
 	self.labelAnimalRabbidFarm.hide()
 
-	tmpPixmap = QtGui.QPixmap('images/animalCow.png')
-	self.labelAnimalCowFarm.setPixmap(tmpPixmap)
-	self.labelAnimalCowFarm.hide()
+	tmpPixmap = QtGui.QPixmap('images/animalFox2.png')
+	self.labelAnimalCow.setPixmap(tmpPixmap)
 
-	tmpPixmap = QtGui.QPixmap('images/animalTiger.png')
 	self.labelAnimalTigerFarm.setPixmap(tmpPixmap)
 	self.labelAnimalTigerFarm.hide()
 
+	tmpPixmap = QtGui.QPixmap('images/animalFrog.png')
+	self.labelAnimalTiger.setPixmap(tmpPixmap)
 
-
+	self.labelAnimalCowFarm.setPixmap(tmpPixmap)
+	self.labelAnimalCowFarm.hide()
 
         # Load the file into a QMovie
         self.movie = QMovie("images/bonfire.gif")
