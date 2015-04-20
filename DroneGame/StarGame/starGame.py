@@ -28,14 +28,16 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
         self.setupUi(self)
 
 	# Variables	
+	self.droneOffset = Point(-90,-90,0)
+	self.appleOffset = Point(-50,-50,0)
 	self.gameLength = 60 # seconds
 	self.score = 0
 	self.highscore = 0
-	self.appleRange = 70
+	self.appleRange = 65
 	self.minDroneRange = Point(-50,-50,0)
 	self.maxDroneRange = Point(780,780,0)
-	self.minAppleRange = Point(-50,-50,0)
-	self.maxAppleRange = Point(770,770,0)
+	self.minAppleRange = Point(50,50,0) 
+	self.maxAppleRange = Point(780,780,0)
 	centerPoint = (self.maxDroneRange.x-self.minDroneRange.x)/2
 	self.dronePos = Point(centerPoint,centerPoint,0)
 	self.applePos = []
@@ -47,7 +49,7 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 
 	# Load apple image.
 	applePixmap = QtGui.QPixmap('images/apple.png')
-	appleScaledPixmap = applePixmap.scaled(100,100, QtCore.Qt.KeepAspectRatio)
+	appleScaledPixmap = applePixmap.scaled(80,80, QtCore.Qt.KeepAspectRatio)
 	#self.labelApple.setPixmap(appleScaledPixmap)
 	#self.labelApple.setVisible(False)
 
@@ -120,7 +122,7 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 
     def scoreTimerCallback(self):
 	for i in range(0,nStars):
-		if(abs(self.applePos[i].x-self.dronePos.x)<self.appleRange and abs(self.applePos[i].y-self.dronePos.y)<self.appleRange and self.labelApple[i].isVisible() == True):
+		if(abs(self.applePos[i].x+self.appleOffset.x-self.dronePos.x)<self.appleRange and abs(self.applePos[i].y+self.appleOffset.y-self.dronePos.y)<self.appleRange and self.labelApple[i].isVisible() == True):
 			self.updateScore(self.score+1)
 			self.generateApple(i)
 
@@ -208,9 +210,9 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 
     def moveDrone(self, msg):
 	if useROS == True:
-		self.labelDrone.move(msg.y*3-70, 900-msg.x*3-70)
-		self.dronePos.x = msg.y*3-70
-		self.dronePos.y = 900-msg.x*3-70
+		self.labelDrone.move(msg.x*3+self.droneOffset.x, msg.y*3+self.droneOffset.y)
+		self.dronePos.x = msg.x*3+self.droneOffset.x
+		self.dronePos.y = msg.y*3+self.droneOffset.y
 	else:
 		self.labelDrone.move(msg.x, msg.y)
 		self.dronePos.x = msg.x
@@ -220,18 +222,16 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	self.moveDrone(msg) 
 
     def imageCallback(self, image):
-	#self.cropPixels = [369,16, 1020,32, 1000,677, 362,657] # x1,y1,x2,y2,x3,y3,x4,y4 (UL, UR, DR, DL)
-
 	# Convert to opencv and crop image
 	cvImage = self.bridge.imgmsg_to_cv2(image)
-	#cvImage = cvImage[self.cropPixels[1]:self.cropPixels[5], self.cropPixels[0]:self.cropPixels[4]]
-	cvImage = cvImage[5:670+5,360:676+360]
-	# [startY:endY, startX:endX] 
 
+	# [startY:endY, startX:endX] 
+	cvImage = cvImage[0:720,325:720+325]
+	
 	# Rotate image	
-	rows,cols,channels = cvImage.shape
-	M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
-	cvImage = cv2.warpAffine(cvImage,M,(cols,rows))
+	#rows,cols,channels = cvImage.shape
+	#M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
+	#cvImage = cv2.warpAffine(cvImage,M,(cols,rows))
 
 	# Convert to QImage and then QPixmap
 	cvImage = cv2.cvtColor(cvImage, cv2.cv.CV_BGR2RGB)

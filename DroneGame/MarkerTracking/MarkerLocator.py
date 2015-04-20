@@ -25,7 +25,7 @@ Structural changes allows simultaneous tracking of several markers.
 Frederik Hagelskjaer added code to publish marker locations to ROS.
 '''
 
-PublishToROS = False
+PublishToROS = True
 
 if PublishToROS:
     import rospy
@@ -190,7 +190,7 @@ def main():
        
     cd = CameraDriver(toFind, defaultKernelSize = 15, cameraNumber = 0) 
     signal.signal(signal.SIGINT, cd.signalHandler)
-    pointLocationsInImage = [[369, 16], [1020, 32], [1000, 677], [362, 657]]
+    pointLocationsInImage = [[325, 0], [1045, 0], [1045, 720], [325, 720]]
     realCoordinates = [[0, 0], [300, 0], [300, 300], [0, 300]]
     perspectiveConverter = PerspectiveCorrecter(pointLocationsInImage, realCoordinates)
  
@@ -203,11 +203,11 @@ def main():
 		RP.publishMarkerLocations(perspectiveConverter.convertPose(y[0]))
 	    	cd.publishImageFrame(RP)
 	else:
-        	#cd.drawDetectedMarkers()
+        	cd.drawDetectedMarkers()
 	        cd.handleKeyboardEvents()
 	        cd.showProcessedFrame()
-           	poseCorrected = perspectiveConverter.convertPose(y[0])
-	    	print "x: ", poseCorrected.x, " y: ", poseCorrected.y
+           	#poseCorrected = perspectiveConverter.convertPose(y[0])
+	    	#print "x: ", poseCorrected.x, " y: ", poseCorrected.y
         
     print("Stopping")
 
