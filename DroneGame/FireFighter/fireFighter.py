@@ -57,6 +57,12 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
 	self.labelBackground.lower()
 
+
+	# Progress bar
+	self.barTime.setTextVisible(False)
+	self.barTime.setRange(0,self.gameLength)
+	self.updateTime(self.gameLength)
+
 	# Variables	
 	self.gameRunning = False
 	self.score = 0
@@ -157,6 +163,11 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
     def handle_trigger_farm(self, obj):
 	obj.showFarm()
 
+
+    def updateTime(self, time):
+	self.barTime.setValue(time)
+	self.labelTime.setText(QtCore.QString.number(time))
+
     def resetGame(self):
 	self.score = 0
 	self.lcdScore.display(self.score)
@@ -165,9 +176,10 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 		animal.obj.show()
 		animal.hideFarm()
 		animal.setRescued(False)
+
     def updateScore(self):
 	self.score += 15
-	self.lcdScore.display(self.score)
+	self.updateTime(self.score)
 
     def updateHighscore(self):
 	if(self.highscore < self.score):
@@ -185,12 +197,10 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
     def keyPressEvent(self, event):	
 	key = event.key()
-	if event.isAutoRepeat():
-	    	if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_A: 
-			print "A"
-
-	    	if type(event) == QtGui.QKeyEvent and event.key() == QtCore.Qt.Key_S:
-			print "S"
+    	if key == QtCore.Qt.Key_Escape:
+		self.btnExitClicked()  
+	elif key == QtCore.Qt.Key_R:
+		self.btnResetClicked() 
 
     def btnExitClicked(self):    
 	rospy.signal_shutdown("Exit program")
