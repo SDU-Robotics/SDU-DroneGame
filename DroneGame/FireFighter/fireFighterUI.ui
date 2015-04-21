@@ -279,6 +279,22 @@
      <pixmap>images/farm_corner.png</pixmap>
     </property>
    </widget>
+   <widget class="QLabel" name="labelDrone">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>180</y>
+      <width>90</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Drone</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <zorder>labelBackground</zorder>
    <zorder>labelFire1</zorder>
    <zorder>labelFire2</zorder>
@@ -329,22 +345,6 @@
      <string/>
     </property>
    </widget>
-  </widget>
-  <widget class="QLabel" name="labelDrone">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>370</y>
-     <width>90</width>
-     <height>90</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Drone</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
