@@ -13,7 +13,7 @@ from random import randint
 formClass = uic.loadUiType("starGameUI.ui")[0]               
 
 # Define use ROS
-useROS = False
+useROS = True
 nStars = 3
 
 # Ros spin thread

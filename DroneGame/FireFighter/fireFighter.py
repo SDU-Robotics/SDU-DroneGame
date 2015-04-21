@@ -258,7 +258,7 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 	cvImage = self.bridge.imgmsg_to_cv2(image)
 
 	# [startY:endY, startX:endX] 
-	cvImage = cvImage[5:670+5,360:676+360]
+	cvImage = cvImage[0:720,325:720+325]
 
 	# Rotate image
 	rows,cols,channels = cvImage.shape
