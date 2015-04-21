@@ -7,7 +7,7 @@ from PyQt4.QtCore import QObject, pyqtSignal
 from threading import Thread
 from geometry_msgs.msg import Point
 from random import randint
-from math import sqrt
+from math import hypot
 
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
@@ -42,11 +42,15 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
     trigger = pyqtSignal(str)
     triggerFarm = pyqtSignal(object)
     triggerBackgroundUpdater = pyqtSignal()
+    triggerUpdateScore = pyqtSignal()
 
     def __init__(self, parent=None):
 	# Setup QT gui
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+
+
+	self.gameLength = 60
 
 	self.CarryingAnimal = None
 
@@ -54,7 +58,7 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
 	self.triggerFarm.connect(self.handle_trigger_farm)
 	self.triggerBackgroundUpdater.connect(self.handle_background_update)
-
+	self.triggerUpdateScore.connect(self.handle_update_score)
 	self.labelBackground.lower()
 
 
@@ -67,8 +71,6 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 	self.gameRunning = False
 	self.score = 0
 	self.highscore = 0
-	self.xOffset = 800
-	self.yOffset = 100
 	self.animalLabels = []
 
 
@@ -163,19 +165,23 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
     def handle_trigger_farm(self, obj):
 	obj.showFarm()
 
-
     def updateTime(self, time):
 	self.barTime.setValue(time)
 	self.labelTime.setText(QtCore.QString.number(time))
 
     def resetGame(self):
 	self.score = 0
-	self.lcdScore.display(self.score)
+	self.updateTime(self.gameLength)
+#	self.lcdScore.display(self.score)
 
 	for animal in self.animalLabels:
 		animal.obj.show()
 		animal.hideFarm()
 		animal.setRescued(False)
+
+    def handle_update_score(self):
+	self.updateScore()
+
 
     def updateScore(self):
 	self.score += 15
@@ -187,13 +193,12 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 		self.lcdHighscore.display(self.highscore)
 
     def gameTimerCallback(self):
-	# Stop game
-	if (self.lcdTime.intValue()-1 < 0):
-		self.gameTimer.stop()
-		self.updateHighscore()
-		self.resetGame()
-	else: # Game is running
-		self.lcdTime.display(self.lcdTime.intValue()-1)
+	# Stop game        
+	if(self.barTime.value()-1 < 0):
+                self.updateHighscore()
+                self.resetGame()
+        else:
+                self.updateTime(self.barTime.value()-1)
 
     def keyPressEvent(self, event):	
 	key = event.key()
@@ -218,34 +223,31 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
     def moveDrone(self, msg):
 	if(msg.x>0 and msg.y>0):
-		transfx = msg.y
-		transfy = 300 - msg.x
+		dronex = msg.x*3
+		droney = msg.y*3
 
-		dronex = transfx*3 + 670
-		droney = transfy*3 + 60
+		droneWindowx = dronex
+		droneWindowy = droney
 
-		droneWindowx = transfx*3
-		droneWindowy = transfy*3
-
-		self.labelDrone.move(dronex-20,droney-20)
+		self.labelDrone.move(dronex-22,droney-22)
 		if self.CarryingAnimal == None:
 			if self.rescuedAnimals == 0:
 				self.gameTimer.start(1000)
 
 			for animal in self.animalLabels:
 				if not animal.isRescued():
-					dist = sqrt((droneWindowx - animal.obj.x())**2 + (droneWindowy - animal.obj.y())**2)
+					dist = hypot(droneWindowx - animal.obj.x(), droneWindowy - animal.obj.y())
 					if dist < 30:
 						animal.obj.setVisible(False)
 						self.trigger.emit(animal.combinedImg)
 						animal.setRescued(True)
 						self.CarryingAnimal = animal
 		else:
-			if dronex > 1369 and droney < 261:
+# corner: 662.5  -  230.0
+			if dronex > 662 and droney < 230:
 				print "Dropping of animal"
 				self.trigger.emit("images/droneHighRes.png")
-				self.updateScore()
-
+				self.triggerUpdateScore.emit()
 				self.triggerFarm.emit(self.CarryingAnimal)
 				self.CarryingAnimal = None
 
@@ -264,23 +266,19 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
 
     def imageCallback(self, image):
-	# Convert to opencv and crop image
-	cvImage = self.bridge.imgmsg_to_cv2(image)
 
-	# [startY:endY, startX:endX] 
-	cvImage = cvImage[0:720,325:720+325]
+# Convert to opencv and crop image
+        cvImage = self.bridge.imgmsg_to_cv2(image)
 
-	# Rotate image
-	rows,cols,channels = cvImage.shape
-	M = cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
-	cvImage = cv2.warpAffine(cvImage,M,(cols,rows))
+        # [startY:endY, startX:endX] 
+        cvImage = cvImage[0:720,325:720+325]
 
-	# Convert to QImage and then QPixmap
-	cvImage = cv2.cvtColor(cvImage, cv2.cv.CV_BGR2RGB)
-	qimg = QtGui.QImage(cvImage.data, cvImage.shape[1], cvImage.shape[0], QtGui.QImage.Format_RGB888)
-
+        # Convert to QImage and then QPixmap
+        cvImage = cv2.cvtColor(cvImage, cv2.cv.CV_BGR2RGB)
+        qimg = QtGui.QImage(cvImage.data, cvImage.shape[1], cvImage.shape[0], QtGui.QImage.Format_RGB888)
 	self.pixmap_bg = QtGui.QPixmap.fromImage(qimg)
 	self.triggerBackgroundUpdater.emit()
+
 # Main
 if __name__ == "__main__":
 	# Load qt gui and VildeVennerGame window
