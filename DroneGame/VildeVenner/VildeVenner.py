@@ -177,7 +177,7 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 
     def handle_move_drone(self, pose):
 	pose = tuple(map(int, pose[1:-1].split(',')))
-	print pose[0], " - ", pose[1]
+	#print pose[0], " - ", pose[1]
 	self.labelDrone.move(pose[0], pose[1])
 
     def handle_background_update(self):
@@ -205,6 +205,8 @@ class VildeVennerGameWindow(QtGui.QMainWindow, formClass):
 		animal.obj.show()
 		animal.hideFarm()
 		animal.setRescued(False)
+
+	#self.btnStartClicked()
 
     def handle_update_score(self, increase):
 	self.updateScore(int(increase))
@@ -324,7 +326,7 @@ if __name__ == "__main__":
 
 	# Show game window
 	gameWindow.show()
-	#gameWindow.showFullScreen()
+	gameWindow.showFullScreen()
 	app.exec_()
 
 

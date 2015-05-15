@@ -2,6 +2,7 @@
 import sys
 import rospy
 from PyQt4 import QtCore, QtGui, uic
+from PyQt4.QtCore import QObject, pyqtSignal
 from threading import Thread
 from geometry_msgs.msg import Point
 from sensor_msgs.msg import Image
@@ -16,23 +17,43 @@ formClass = uic.loadUiType("starGameUI.ui")[0]
 useROS = True
 nStars = 3
 
+class HighScoreStorage:
+        def __init__(self):
+                self.file = open("highscorecache.txt",'r+')
+
+        def getHighScore(self):
+                self.file.seek(0)
+                return int(self.file.readline())
+        def setHighScore(self, value):
+                self.file.seek(0)
+                self.file.write(str(value) + "\n")
+                self.file.flush()
+
 # Ros spin thread
 def rosThread():
 	rospy.spin()
 	
 # My QT class
 class AppleGameWindow(QtGui.QMainWindow, formClass):
+    triggerMoveDrone = pyqtSignal(str)
     def __init__(self, parent=None):
 	# Setup QT gui
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+
+	self.triggerMoveDrone.connect(self.handle_move_drone)
+        #create highscore object
+        self.highscorestorage = HighScoreStorage()
 
 	# Variables	
 	self.droneOffset = Point(-90,-90,0)
 	self.appleOffset = Point(-50,-50,0)
 	self.gameLength = 60 # seconds
 	self.score = 0
-	self.highscore = 0
+        #update highscore from file
+        self.highscore = self.highscorestorage.getHighScore()
+        self.lcdHighscore.display(self.highscore)
+
 	self.appleRange = 65
 	self.minDroneRange = Point(-50,-50,0)
 	self.maxDroneRange = Point(780,780,0)
@@ -107,6 +128,13 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 		self.applePos[index].y = randint(self.minAppleRange.y,self.maxAppleRange.y)
 		self.labelApple[index].move(self.applePos[index].x,self.applePos[index].y)
 
+
+    def handle_move_drone(self, pose):
+        pose = tuple(map(int, pose[1:-1].split(',')))
+	#print pose[0], " ", pose[1]
+        self.labelDrone.move(pose[0], pose[1])
+
+
     def updateTime(self, time):
 	self.barTime.setValue(time)
 	self.labelTime.setText(QtCore.QString.number(time))
@@ -119,6 +147,7 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	if(self.highscore < self.score):
 		self.highscore = self.score
 		self.lcdHighscore.display(self.highscore)
+		self.highscorestorage.setHighScore(self.highscore)
 
     def scoreTimerCallback(self):
 	for i in range(0,nStars):
@@ -195,6 +224,8 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 	for i in range(0,nStars):
 		self.labelApple[i].setVisible(False)
 
+	self.btnStartClicked()
+
     def btnStartClicked(self):  
 	# Reset score and time
 	self.updateScore(0)
@@ -210,7 +241,8 @@ class AppleGameWindow(QtGui.QMainWindow, formClass):
 
     def moveDrone(self, msg):
 	if useROS == True:
-		self.labelDrone.move(msg.x*3+self.droneOffset.x, msg.y*3+self.droneOffset.y)
+		self.triggerMoveDrone.emit(str((int(msg.x*3+self.droneOffset.x), int(msg.y*3+self.droneOffset.y))))
+#		self.labelDrone.move(msg.x*3+self.droneOffset.x, msg.y*3+self.droneOffset.y)
 		self.dronePos.x = msg.x*3+self.droneOffset.x
 		self.dronePos.y = msg.y*3+self.droneOffset.y
 	else:
