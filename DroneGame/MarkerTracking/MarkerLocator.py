@@ -163,8 +163,8 @@ class RosPublisher:
         self.markers = markers
 	self.bridge = CvBridge()
         for i in markers:
-            self.pub.append(rospy.Publisher('positionPublisher' + str(i), Point))     
-	self.imagePub = rospy.Publisher("imagePublisher", Image)
+            self.pub.append(rospy.Publisher('positionPublisher' + str(i), Point, queue_size=10))     
+	self.imagePub = rospy.Publisher("imagePublisher", Image, queue_size=10)
         rospy.init_node('DroneLocator')   
 
     def publishImage(self, Image):
